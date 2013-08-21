@@ -1,0 +1,38 @@
+#!/usr/bin/env luajit
+
+package.path = "../web/?/init.lua;../web/?.lua;../?.lua;../?/init.lua;./?.lua;./?/init.lua"..package.path
+
+local socketHandler = require('web').socketHandler
+local createServer = require('uv').createServer
+local luv = require('luv')
+local logc = require('logging.console')()
+local app = require('moonslice')()
+local edoc = require('utils.error-document')
+local config = require('kylin.config')
+local loader = require('kylin.loader')
+
+local host = os.getenv("KYLINK_IP") or "0.0.0.0"
+local port = os.getenv("KYLINK_PORT") or 8080
+
+loader.load(app, config.apps())
+
+--[[
+app = function(req, res) 
+	res(200, {}, {'hello world\n'})
+end
+]]
+
+app = require('error-document')(app, {
+	[404] = edoc.text("Bam! 404"),
+})
+
+app = require('autoheaders')(app)
+--app = require('log')(app)
+
+createServer(host, port, socketHandler(app))
+
+repeat
+--	count = count + 1
+	print('tick...')
+until luv.run('once') == 0
+
