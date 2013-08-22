@@ -8,13 +8,12 @@ local luv = require('luv')
 local logc = require('logging.console')()
 local app = require('moonslice')()
 local edoc = require('utils.error-document')
-local config = require('kylin.config')
 local loader = require('kylin.loader')
 
 local host = os.getenv("KYLINK_IP") or "0.0.0.0"
 local port = os.getenv("KYLINK_PORT") or 8080
 
-loader.load(app, config.apps())
+loader.load(app)
 
 --[[
 app = function(req, res) 
@@ -33,6 +32,6 @@ createServer(host, port, socketHandler(app))
 
 repeat
 --	count = count + 1
-	print('tick...')
+	logc:debug('tick...')
 until luv.run('once') == 0
 

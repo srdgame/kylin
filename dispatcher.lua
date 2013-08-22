@@ -2,7 +2,7 @@
 local wait = require('fiber').wait
 local fs = require('uv').fs
 local http = require('http')
-local lsp = require('lsp')
+local eval = require('eval')
 
 local _M = {}
 
@@ -10,10 +10,11 @@ local class = {}
 
 function class:dispatch(req, res, func) 
 	-- get the lua file first
-	local path = (root or ".")..req.url.path..".lua"
+	local path = (self.root or ".")..req.url.path..".lua"
+	print(path)
 	local err, stat = wait(fs.stat(path))
 	if stat and stat.is_file then
-		lsp.file(path, req, res)
+		eval.file(path, req, res)
 		--[[
 		res(200, 
 			{["Content-Type"] = "text/html"},

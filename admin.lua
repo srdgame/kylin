@@ -3,7 +3,7 @@ local sendFile = require('send').file
 local wait = require('fiber').wait
 local fs = require('uv').fs
 local http = require('http')
-local dispatcher = require('dispatcher').new('.')
+local dispatcher = require('dispatcher').new('admin')
 
 local _M = {}
 
@@ -18,11 +18,6 @@ _M.get = function(req, res)
 		end
 	else
 		dispatcher:dispatch(req, res)
-		--[[
-		res(200, {
-			["Content-Type"] = "text/plain"}, 
-			{"This admin pages\n"})
-		]]--
 	end
 end
 
