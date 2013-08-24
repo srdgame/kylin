@@ -3,7 +3,7 @@ local function encodeCookies(cookies)
 	local value = {}
 	for k, v in pairs(cookies) do
 		if #value ~= 0 then
-			value[#value + 1] = ';'
+			value[#value + 1] = '; '
 		end
 		value[#value + 1] = k..'='..v
 	end
@@ -13,7 +13,7 @@ end
 local function decodeCookies(value)
 	local cookies = {}
 
-	for k, v in string.gmatch(value, "(%w+)=(%w+);?") do
+	for k, v in string.gmatch(value, "([^=]+)=([^%s]+)[;%s]?") do
 		cookies[k] = v
 	end
 	return cookies

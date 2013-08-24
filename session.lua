@@ -1,11 +1,18 @@
 
 local session = {}
 function session:value()
-	return "aaaaaaaaaaaaaa"
+	return self.id
 end
 
-local newSession = function(req)
-	return setmetatable({}, {__index = session})
+local newSession = function(req, svalue)
+	return setmetatable(
+	{
+		key = nil,
+		id = svalue,
+		path = nil,
+		expire = nil, 
+	},
+	{__index = session})
 end
 
 return function(app, options)

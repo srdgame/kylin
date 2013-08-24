@@ -17,6 +17,9 @@ _M.get = function(req, res)
 			http.redirect('/404')(req, res)
 		end
 	else
+		if req.url.path:match('/$') then
+			req.url.path = req.url.path..'index'
+		end
 		dispatcher:dispatch(req, res)
 	end
 end
