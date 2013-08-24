@@ -1,3 +1,37 @@
+local cookie = {}
+
+function cookie:tostring()
+	local value = {}
+	value[#value + 1] = self.key.."="..self.value
+	if self.expire then
+		value[#value + 1] = 'Expires='..os.date('!%a, %d %b %Y %X CUT', self.expire)
+	end
+	if self.path then
+		value[#value + 1] = 'Path='..self.path
+	end
+	if self.domain then
+		value[#value + 1] = 'Domain='..self.domain
+	end
+	if self.http_only then
+		value[#value + 1] = 'HttpOnly'
+	end
+	local v = table.concat(value, "; ")
+	print(v)
+end
+
+local _M = {}
+
+function _M.newCookie(key, value, path, expire, domain, http_only)
+	return setmetatable(
+	{
+		key = key,
+		value = value,
+		path = path,
+		expire = expire,
+		domain = domain,
+		http_only = http_only,
+	}, {__index = cookie})
+end
 
 local function encodeCookies(cookies)
 	local value = {}
@@ -12,14 +46,13 @@ end
 
 local function decodeCookies(value)
 	local cookies = {}
-
 	for k, v in string.gmatch(value, "([^=]+)=([^%s]+)[;%s]?") do
 		cookies[k] = v
 	end
 	return cookies
 end
 
-return function(app)
+function _M.web(app)
 	return function (req, res)
 		-- find and load session
 		for name, value in pairs(req.headers) do
@@ -36,3 +69,4 @@ return function(app)
 	end
 end
 
+return _M

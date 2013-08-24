@@ -22,7 +22,7 @@ end
 ]]
 
 app = require('session')(app)
-app = require('cookies')(app)
+app = require('cookies').web(app)
 
 app = require('error-document')(app, {
 	[404] = edoc.text("Bam! 404"),
