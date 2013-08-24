@@ -4,6 +4,7 @@ local http = require('http')
 local logc = require('logging.console')()
 
 local function sendFile(path, req, res)
+	logc:info(req)
 	local body = {}
 	local headers = {}
 	local env = { 
@@ -14,7 +15,10 @@ local function sendFile(path, req, res)
 		html = function(...)
 			body[#body + 1] = table.concat({...}, '\t')
 		end,
-		headers = headers
+		body = body,
+		headers = headers,
+		cookies = {},
+		status = 200,
 	}
 	local f, err = loadfile(path, nil, env)
 	if not f then

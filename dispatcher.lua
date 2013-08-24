@@ -11,7 +11,6 @@ local class = {}
 function class:dispatch(req, res, func) 
 	-- get the lua file first
 	local path = (self.root or ".")..req.url.path..".lua"
-	print(path)
 	local err, stat = wait(fs.stat(path))
 	if stat and stat.is_file then
 		eval.file(path, req, res)

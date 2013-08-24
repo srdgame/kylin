@@ -21,6 +21,9 @@ app = function(req, res)
 end
 ]]
 
+app = require('session')(app)
+app = require('cookies')(app)
+
 app = require('error-document')(app, {
 	[404] = edoc.text("Bam! 404"),
 })
@@ -32,6 +35,6 @@ createServer(host, port, socketHandler(app))
 
 repeat
 --	count = count + 1
-	logc:debug('tick...')
+--	logc:debug('tick...')
 until luv.run('once') == 0
 
