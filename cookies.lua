@@ -4,7 +4,7 @@ function cookie:tostring()
 	local value = {}
 	value[#value + 1] = self.value
 	if self.expire then
-		value[#value + 1] = 'Expires='..os.date('!%a, %d %b %Y %X CUT', self.expire)
+		value[#value + 1] = 'Expires='..os.date('!%a, %d %b %Y %X GMT', self.expire)
 	end
 	if self.path then
 		value[#value + 1] = 'Path='..self.path
@@ -18,6 +18,14 @@ function cookie:tostring()
 	local v = table.concat(value, "; ")
 	print(v)
 	return v
+end
+
+function cookie:update(time_span)
+	if not time_span then
+		self.expire = nil
+	else
+		self.expire = os.time() + time_span
+	end
 end
 
 local _M = {}

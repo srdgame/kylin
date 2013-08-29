@@ -13,7 +13,6 @@ local function sendFile(path, req, res)
 			logc:debug({...})
 		end,
 		html = function(...)
-			logc:info({...})
 			body[#body + 1] = table.concat({...}, '\t')
 		end,
 		body = body,
