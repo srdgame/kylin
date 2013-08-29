@@ -2,7 +2,7 @@ local cookie = {}
 
 function cookie:tostring()
 	local value = {}
-	value[#value + 1] = self.key.."="..self.value
+	value[#value + 1] = self.value
 	if self.expire then
 		value[#value + 1] = 'Expires='..os.date('!%a, %d %b %Y %X CUT', self.expire)
 	end
@@ -17,6 +17,7 @@ function cookie:tostring()
 	end
 	local v = table.concat(value, "; ")
 	print(v)
+	return v
 end
 
 local _M = {}
