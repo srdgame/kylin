@@ -9,6 +9,7 @@ local logc = require('logging.console')()
 local app = require('moonslice')()
 local edoc = require('utils.error-document')
 local loader = require('kylin.loader')
+local config = require('config')()
 
 local host = os.getenv("KYLINK_IP") or "0.0.0.0"
 local port = os.getenv("KYLINK_PORT") or 8080
@@ -21,7 +22,7 @@ app = function(req, res)
 end
 ]]
 
-app = require('session')(app)
+app = require('session')(app, config.settings().session)
 app = require('cookies').web(app)
 
 app = require('error-document')(app, {

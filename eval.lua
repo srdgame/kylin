@@ -12,12 +12,11 @@ local function sendFile(path, req, res)
 		print = function(...) 
 			logc:debug({...})
 		end,
-		html = function(...)
+		out = function(...)
 			body[#body + 1] = table.concat({...}, '\t')
 		end,
-		body = body,
 		headers = headers,
-		cookies = {},
+		cookies = req.cookies,
 		status = 200,
 	}
 	local f, err = loadfile(path, nil, env)

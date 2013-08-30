@@ -21,6 +21,7 @@ function cookie:tostring()
 end
 
 function cookie:update(time_span)
+	self.updated = true
 	if not time_span then
 		self.expire = nil
 	else
@@ -39,16 +40,23 @@ function _M.newCookie(key, value, path, expire, domain, http_only)
 		expire = expire,
 		domain = domain,
 		http_only = http_only,
+		updated = true,
 	}, {__index = cookie})
 end
 
 local function encodeCookies(cookies)
 	local value = {}
 	for k, v in pairs(cookies) do
-		if #value ~= 0 then
-			value[#value + 1] = '; '
+		if v.updated  then
+			if #value ~= 0 then
+				value[#value + 1] = '; '
+			end
+			if type(v) == 'table' then
+				value[#value + 1] = k..'='..v:tostring()
+			else
+				value[#value + 1] = k..'='..v
+			end
 		end
-		value[#value + 1] = k..'='..v
 	end
 	return table.concat(value)
 end
@@ -56,7 +64,8 @@ end
 local function decodeCookies(value)
 	local cookies = {}
 	for k, v in string.gmatch(value, "([^=]+)=([^%s]+)[;%s]?") do
-		cookies[k] = v
+		cookies[k] = _M.newCookie(k, v)
+		cookies[k].updated = false
 	end
 	return cookies
 end
