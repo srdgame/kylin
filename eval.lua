@@ -1,3 +1,4 @@
+local wait = require('fiber').wait
 local fs = require('uv').fs
 local getType = require('mime').getType
 local http = require('http')

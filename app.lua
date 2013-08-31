@@ -3,8 +3,6 @@ local sendFile = require('send').file
 local wait = require('fiber').wait
 local fs = require('uv').fs
 local http = require('http')
-local config = require('kylin.config')()
-
 local class = {}
 
 function class:get(req, res)
@@ -17,6 +15,7 @@ function class:get(req, res)
 			http.redirect('/404')(req, res)
 		end
 	else
+		req.url.path = req.url.path:match('^/'..self.path..'(.+)')
 		self.dispatcher:dispatch(req, res)
 	end
 end
@@ -35,9 +34,7 @@ end
 
 local _M = {}
 _M.new = function(path)
-	local settings = config.settings()
-	local root = settings.root or "."
-	local dispatcher = require('dispatcher').new(root)
+	local dispatcher = require('dispatcher').new(path)
 	return setmetatable({dispatcher = dispatcher, path = path}, {__index = class})
 end
 
