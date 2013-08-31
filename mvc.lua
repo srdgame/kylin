@@ -83,7 +83,6 @@ local function parsePath(path)
 
 	--local file, func = req.url.path:match("(.-)/(%w+)")
 	local file, func = path:match("(.-)[/]?([^/]+)$")
-	print(file, func)
 	file = file or ""
 	if string.len(file) == 0 then
 		file = '/index'
@@ -95,11 +94,10 @@ end
 local function sendFile(root, req, res)
 	logc:info(req)
 	local file, func = parsePath(req.url.path)
-	print(file, func)
 	local cpath = root.."/controller"..file..".lua"
-	local mpath = root..'/model'..file..'.lua'
+--	local mpath = root..'/model'..file..'.lua'
 	local vpath = root..'/view'..file..'.html'
-	print(cpath)
+	logc:debug(cpath, func)
 	local err, stat = wait(fs.stat(cpath))
 	if stat and stat.is_file then
 		local body = {}
@@ -127,18 +125,21 @@ local function sendFile(root, req, res)
 			local obj = f()
 			if obj[func] then
 				local re = obj[func]()
-				env.messages = re.messages
-				env.vars = re.vars
+				for k, v in pairs(re) do
+					env[k] = v
+				end
 			else
 				logc:error("not such method")
 				return false
 			end
 		end
 
+		--[[
 		local f, err = loadfile(mpath, nil, env)
 		if f then
 			-- load model
 		end
+		--]]
 		layout(vpath, env)
 		res(200, headers, body)
 		return true

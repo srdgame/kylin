@@ -16,6 +16,7 @@ function class:get(req, res)
 		end
 	else
 		req.url.path = req.url.path:match('^/'..self.path..'(.+)')
+		req.url.path = req.url.path or "/"
 		self.dispatcher:dispatch(req, res)
 	end
 end

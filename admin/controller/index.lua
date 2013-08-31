@@ -9,4 +9,5 @@ end
 
 return {
 	index = index,
+	hello = index
 }
