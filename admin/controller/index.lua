@@ -1,4 +1,9 @@
 local function index(req, res)
+	if test_model then
+		test_model()
+	else
+		print('test_model not exist')
+	end
 	local vars = {}
 	vars.a = 11 
 	vars.b = 12
@@ -9,5 +14,5 @@ end
 
 return {
 	index = index,
-	hello = index
+	hello = function () return "hello world\n" end
 }
