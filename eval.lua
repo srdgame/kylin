@@ -1,7 +1,7 @@
 local wait = require('fiber').wait
 local fs = require('uv').fs
 local getType = require('mime').getType
-local http = require('http')
+local http = require('kylin.http')
 local logc = require('logging.console')()
 
 local function sendFile(path, req, res)

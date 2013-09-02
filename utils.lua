@@ -1,6 +1,10 @@
 local lfs = require('lfs')
 
 local function enumfiles (path, pattern, r_table, intofolder)
+	r_table = r_table or {}
+	if lfs.attributes(path, 'mode') ~= 'directory' then
+		return
+	end
 	for file in lfs.dir(path) do
 		if file ~= "." and file ~= ".." then
 			local f = path..'/'..file
@@ -21,8 +25,11 @@ local function enumfiles (path, pattern, r_table, intofolder)
 end
 
 local function parsePath(path)
-	if path:match('/$') then
-		return path..'index', 'index'
+	if not path or path == '/' then
+		return '/index', 'index'
+	end
+	if path:match("/$") then
+		return path:sub(1, -2), 'index'
 	end
 
 	--local file, func = req.url.path:match("(.-)/(%w+)")

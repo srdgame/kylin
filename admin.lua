@@ -2,8 +2,8 @@
 local sendFile = require('send').file
 local wait = require('fiber').wait
 local fs = require('uv').fs
-local http = require('http')
-local dispatcher = require('dispatcher').new('admin')
+local http = require('kylin.http')
+local dispatcher = require('kylin.dispatcher').new('admin')
 
 local _M = {}
 

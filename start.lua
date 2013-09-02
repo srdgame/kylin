@@ -29,6 +29,8 @@ app = require('error-document')(app, {
 	[404] = edoc.text("Bam! 404"),
 })
 
+app = require('url')(app)
+
 app = require('autoheaders')(app)
 --app = require('log')(app)
 

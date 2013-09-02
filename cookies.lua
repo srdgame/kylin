@@ -16,7 +16,7 @@ function cookie:tostring()
 		value[#value + 1] = 'HttpOnly'
 	end
 	local v = table.concat(value, "; ")
-	print(v)
+	--print(v)
 	return v
 end
 

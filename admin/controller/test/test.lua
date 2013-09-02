@@ -5,6 +5,6 @@ return {
 		else
 			print('test_model not exist')
 		end
-		return "test"
+		return "test\n"
 	end
 }

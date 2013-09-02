@@ -2,7 +2,7 @@
 local sendFile = require('send').file
 local wait = require('fiber').wait
 local fs = require('uv').fs
-local http = require('http')
+local http = require('kylin.http')
 local class = {}
 
 function class:get(req, res)
@@ -35,7 +35,7 @@ end
 
 local _M = {}
 _M.new = function(path)
-	local dispatcher = require('dispatcher').new(path)
+	local dispatcher = require('kylin.dispatcher').new(path)
 	return setmetatable({dispatcher = dispatcher, path = path}, {__index = class})
 end
 

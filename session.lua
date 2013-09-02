@@ -2,21 +2,23 @@ local math = require ('math')
 local cookies = require('cookies')
 local logc = require('logging.console')()
 
+local sessions = {}
+
 local newSession = function(key, id, path, span)
 	math.randomseed(os.time() + assert(tonumber(tostring({}):sub(7))))
 	id = id or ('KYLIN'..math.random(0, 0xffffffff)..':'..math.random(0, 0xffffffff))
 	local time = span and os.time() + span
 	local session = cookies.newCookie(key, id, path, time, nil, true)
-	session.data = nil
+	session.data = {}
 	return session
 end
 
 local loadSession = function(session)
-	session.data = nil
+	session.data = sessions[session.key]
 end
 
 local saveSession = function(session)
-	-- nothing
+	sessions[session.key] = session.data
 end
 
 return function(app, options)

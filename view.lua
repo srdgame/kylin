@@ -40,6 +40,7 @@ local function translate(s)
 end
 
 local function layout(path, env)
+	print(path)
 	local err, fd = wait(fs.open(path, "r"))
 	if not fd then
 		return false, 'no layout file'

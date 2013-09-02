@@ -25,7 +25,7 @@ local function loadModels(root, path, env)
 
 	await(function(callback) 
 		for k,v in pairs(files) do 
-		    print(k,v)
+--		    print(k,v)
 			local m = loadfile(v, nil, env)
 			m()
 		end

@@ -3,7 +3,8 @@ local wait = require('fiber').wait
 local await = require('fiber').await
 local fs = require('uv').fs
 local getType = require('mime').getType
-local http = require('http')
+local http = require('kylin.http')
+local html = require('kylin.html')
 local logc = require('logging.console')()
 local view = require('kylin.view')
 local model = require('kylin.model')
@@ -36,13 +37,14 @@ local function runController(cpath, func, env)
 	end
 	return true, true
 end
+
 local function sendFile(root, req, res)
 	logc:info(req)
 	local file, func = utils.parsePath(req.url.path)
 	local cpath = root.."/controller"..file..".lua"
 	local mpath = root..'/model'..file
 	local vpath = root..'/view'..file..'.html'
-	logc:debug(cpath, func)
+	logc:debug({ file = cpath, func = func})
 	local err, stat = wait(fs.stat(cpath))
 	if stat and stat.is_file then
 		local body = {}
@@ -55,12 +57,18 @@ local function sendFile(root, req, res)
 			out = function(...)
 				body[#body + 1] = table.concat({...}, '\t')
 			end,
+			include = function(file)
+				print('*****************include')
+				view.layout(file, env)
+			end,
 			headers = headers,
 			cookies = req.cookies,
 			status = 200,
 			req = req,
 			res = res,
 		}
+
+		html.initHelper(env)
 
 		model.load(root..'/model', mpath, env)
 
@@ -84,7 +92,16 @@ end
 
 
 function _M.handle(root, req, res)
-	return sendFile(root, req, res)
+	local r, info = sendFile(root, req, res)
+	if not r then
+		if not req.url.path:match('/$') then
+			print('retry')
+			req.url.path = req.url.path..'/'
+			r, info = sendFile(root, req, res)
+		end
+	end
+
+	return r, info
 end
 
 return _M
