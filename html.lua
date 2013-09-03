@@ -74,7 +74,6 @@ local helpers = {
 	BR = function() return '<br />' end,
 	HR = function() return '<hr />' end,
 	URL = function(...)
-		print('URL', ...)
 		local url = table.concat({...}, '/')
 		--[[
 		print('URL', urlcode.escape(url))
@@ -106,7 +105,6 @@ local function normalTag(name, text, args)
 	else
 		table.insert(vals, ' />')
 	end
-	print('debug', name, table.concat(vals))
 	return table.concat(vals)
 end
 
@@ -129,7 +127,6 @@ _M.initHelper = function(env, root)
 	end
 
 	env.include = function(file)
-		print('indluce', file)
 		local f = file:lower()
 		if f:match('%.html$') then
 			file = root..'/view/'..file
