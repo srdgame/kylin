@@ -49,7 +49,8 @@ local function sendFile(root, req, res)
 	if stat and stat.is_file then
 		local body = {}
 		local headers = {}
-		local env = { 
+		local env = {}
+		env = {
 			http = http,
 			print = function(...) 
 				logc:debug(...)
@@ -58,7 +59,7 @@ local function sendFile(root, req, res)
 				body[#body + 1] = table.concat({...}, '\t')
 			end,
 			include = function(file)
-				print('*****************include')
+				file = root..'/view/'..file
 				view.layout(file, env)
 			end,
 			headers = headers,
@@ -95,7 +96,7 @@ function _M.handle(root, req, res)
 	local r, info = sendFile(root, req, res)
 	if not r then
 		if not req.url.path:match('/$') then
-			print('retry')
+			--print('retry with sub folder's index')
 			req.url.path = req.url.path..'/'
 			r, info = sendFile(root, req, res)
 		end

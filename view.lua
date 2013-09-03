@@ -17,6 +17,7 @@ end
 local function translate(s)
 	s = string.gsub(s, "^#![^\n]+\n", "")
 	s = string.gsub(s, "<%%(.-)%%>", "<?lua %1 ?>")
+	--s = string.gsub(s, "<%?([^l][^u][^a].-)%?>", "<?lua %1 ?>")
 	local res = {}
 	local start = 1   -- start of untranslated part in `s'
 	while true do
@@ -40,7 +41,7 @@ local function translate(s)
 end
 
 local function layout(path, env)
-	print(path)
+	--print(path)
 	local err, fd = wait(fs.open(path, "r"))
 	if not fd then
 		return false, 'no layout file'

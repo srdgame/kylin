@@ -1,16 +1,6 @@
 local urlcode = require('kylin.urlcode')
 local _M = {}
 
-local URL = function(...)
-	local url = table.concat({...})
-	return urlcode.escape(url)
-end
-
-local ARGS = function(...)
-	local args = urlcode.encodetable({...})
-	return args
-end
-
 local __all__ = {
 	'A',
 	'B',
@@ -82,6 +72,15 @@ local __all__ = {
 local helpers = {
 	BR = function() return '<br />' end,
 	HR = function() return '<hr />' end,
+	URL = function(...)
+		print('URL', ...)
+		local url = table.concat({...}, '/')
+		--[[
+		print('URL', urlcode.escape(url))
+		return urlcode.escape(url)
+		]]--
+		return url
+	end,
 }
 
 local function normalTag(name, text, args) 
