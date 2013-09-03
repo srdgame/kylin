@@ -9,7 +9,7 @@ local logc = require('logging.console')()
 local app = require('moonslice')()
 local edoc = require('utils.error-document')
 local loader = require('kylin.loader')
-local config = require('config')()
+local config = require('kylin.config')()
 
 local host = os.getenv("KYLINK_IP") or "0.0.0.0"
 local port = os.getenv("KYLINK_PORT") or 8080
@@ -22,14 +22,14 @@ app = function(req, res)
 end
 ]]
 
-app = require('session')(app, config.settings().session)
-app = require('cookies').web(app)
+app = require('kylin.session')(app, config.settings().session)
+app = require('kylin.cookies').web(app)
 
 app = require('error-document')(app, {
 	[404] = edoc.text("Bam! 404"),
 })
 
-app = require('url')(app)
+app = require('kylin.url')(app)
 
 app = require('autoheaders')(app)
 app = require('log')(app)

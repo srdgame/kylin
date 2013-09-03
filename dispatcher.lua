@@ -1,10 +1,10 @@
 
 local wait = require('fiber').wait
 local fs = require('uv').fs
-local http = require('http')
-local eval = require('eval')
-local mvc = require('mvc')
+local http = require('kylin.http')
+local mvc = require('kylin.mvc')
 local sendFile = require('send').file
+local config = require('kylin.config')()
 
 local _M = {}
 
@@ -22,12 +22,20 @@ end
 
 _M.get = function(req, res)
 	if not req.url.path or req.url.path == '/' then
-		req.url.path = '/admin/'
+		if config.default_app then
+			req.url.path = '/'..config.default_app
+		else
+			req.url.path = '/admin/'
+		end
 	end
 
 	local root, apath = req.url.path:match('^/([^/]+)(/?.-)$')
 	if not root then
-		root = 'admin'
+		if config.default_app then
+			root = config.default_app
+		else
+			root = 'admin'
+		end
 		apatch = '/'
 	end
 
