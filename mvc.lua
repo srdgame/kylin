@@ -58,10 +58,6 @@ local function sendFile(root, req, res)
 			out = function(...)
 				body[#body + 1] = table.concat({...}, '\t')
 			end,
-			include = function(file)
-				file = root..'/view/'..file
-				view.layout(file, env)
-			end,
 			headers = headers,
 			cookies = req.cookies,
 			status = 200,
@@ -69,7 +65,7 @@ local function sendFile(root, req, res)
 			res = res,
 		}
 
-		html.initHelper(env)
+		html.initHelper(env, root)
 
 		model.load(root..'/model', mpath, env)
 

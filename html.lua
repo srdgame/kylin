@@ -1,4 +1,5 @@
 local urlcode = require('kylin.urlcode')
+local view = require('kylin.view')
 local _M = {}
 
 local __all__ = {
@@ -91,11 +92,12 @@ local function normalTag(name, text, args)
 		for k, v in pairs(args) do
 			table.insert(vals, ' ')
 			table.insert(vals, k)
-			table.insert(vals, '=')
+			table.insert(vals, '="')
 			table.insert(vals, v)
+			table.insert(vals, '"')
 		end
 	end
-	if text and string.len(text) ~= 0 then
+	if text then
 		table.insert(vals, '>')
 		table.insert(vals, text)
 		table.insert(vals, '</')
@@ -104,6 +106,7 @@ local function normalTag(name, text, args)
 	else
 		table.insert(vals, ' />')
 	end
+	print('debug', name, table.concat(vals))
 	return table.concat(vals)
 end
 
@@ -119,10 +122,25 @@ for k, v in pairs(__all__) do
 	end
 end
 
-
-_M.initHelper = function(env)
+_M.initHelper = function(env, root)
 	for k, v in pairs(h_env) do
+		--env[k] = function (...) env.out(v(...)) end
 		env[k] = v
+	end
+
+	env.include = function(file)
+		print('indluce', file)
+		local f = file:lower()
+		if f:match('%.html$') then
+			file = root..'/view/'..file
+			view.layout(file, env)
+		end
+		if f:match('%.js$') then
+			env.out(env.SCRIPT("", {src=file, type='text/javascript', charset='utf-8'}))
+		end
+		if f:match('%.css$') then
+			env.out(env.LINK(nil, {href=file, rel='stylesheet'}))
+		end
 	end
 end
 
