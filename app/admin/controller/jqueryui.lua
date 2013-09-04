@@ -1,0 +1,4 @@
+
+return {
+	index = function() end
+}

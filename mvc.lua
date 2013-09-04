@@ -24,11 +24,12 @@ local function runController(cpath, func, env)
 			if type(re) == 'string' then
 				env.out(re)
 				return true
-			end
-			if type(re) == 'table' then
+			elseif type(re) == 'table' then
 				for k, v in pairs(re) do
 					env[k] = v
 				end
+			else
+				return false
 			end
 		else
 			logc:error("not such method")

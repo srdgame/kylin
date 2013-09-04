@@ -20,27 +20,26 @@ local function new(root)
 	return setmetatable({root = root}, {__index = class})
 end
 
+local function redirect2App(req, res)
+	local url = '/admin/'
+	if config.default_app then
+		url = '/'..config.default_app..'/'
+	end
+	return http.redirect(url)(req, res)
+end
+
 _M.get = function(req, res)
 	if not req.url.path or req.url.path == '/' then
-		if config.default_app then
-			req.url.path = '/'..config.default_app
-		else
-			req.url.path = '/admin/'
-		end
+		return redirect2App(req, res)
 	end
 
 	local root, apath = req.url.path:match('^/([^/]+)(/?.-)$')
 	if not root then
-		if config.default_app then
-			root = config.default_app
-		else
-			root = 'admin'
-		end
-		apatch = '/'
+		return redirect2App(req, res)
 	end
 
 	if apath:match('^/static/') or apath:match('^/upload/') then
-		local path = "."..req.url.path
+		local path = "app/"..req.url.path
 		local err, stat = wait(fs.stat(path))
 		if stat and stat.is_file then
 			sendFile(path, req, res)
