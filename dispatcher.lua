@@ -12,7 +12,7 @@ local class = {}
 
 function class:dispatch(req, res) 
 	if not mvc.handle(self.root or ".", req, res) then
-		http.redirect('/404')(req, res)
+		res(404, {}, {})
 	end
 end
 
@@ -45,7 +45,7 @@ _M.get = function(req, res)
 		if stat and stat.is_file then
 			sendFile(path, req, res)
 		else
-			http.redirect('/404')(req, res)
+			res(404, {}, {})
 		end
 	else
 		req.url.path = apath

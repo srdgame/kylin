@@ -28,6 +28,8 @@ local function translate(s)
 			-- not for Lua; pass whole instruction to the output
 			table.insert(res, out(s, ip, fp))
 		else
+			code = string.gsub(code, "(%-%-%[%[.-%]%]%-%-)", "")
+			code = string.gsub(code, "(%-%-.+)", "")
 			if exp == "=" then   -- expression?
 				table.insert(res, string.format(" %s(%s);", 'out', code))
 			else  -- command

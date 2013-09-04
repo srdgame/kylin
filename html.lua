@@ -74,11 +74,11 @@ local helpers = {
 	BR = function() return '<br />' end,
 	HR = function() return '<hr />' end,
 	URL = function(...)
-		local url = table.concat({...}, '/')
-		--[[
-		print('URL', urlcode.escape(url))
-		return urlcode.escape(url)
-		]]--
+		local t = {...}
+		for k, v in pairs(t) do
+			t[k].v = urlcode.escape(v) 
+		end
+		local url = table.concat(t, '/')
 		return url
 	end,
 }
@@ -128,7 +128,7 @@ _M.initHelper = function(env, root)
 
 	env.include = function(file)
 		local f = file:lower()
-		if f:match('%.html$') then
+		if f:match('%.html$') or f:match('%.htm$') then
 			file = root..'/view/'..file
 			view.layout(file, env)
 		end

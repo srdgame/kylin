@@ -39,7 +39,9 @@ local function runController(cpath, func, env)
 end
 
 local function sendFile(root, req, res)
+	logc:info('REQ----------------------------------')
 	logc:info(req)
+	logc:info('-------------------------------------')
 	local file, func = utils.parsePath(req.url.path)
 	local cpath = root.."/controller"..file..".lua"
 	local mpath = root..'/model'..file
@@ -58,7 +60,9 @@ local function sendFile(root, req, res)
 			out = function(...)
 				body[#body + 1] = table.concat({...}, '\t')
 			end,
-			headers = headers,
+			header = function(key, val)
+				headers[key] = val
+			end,
 			cookies = req.cookies,
 			status = 200,
 			req = req,
@@ -75,6 +79,7 @@ local function sendFile(root, req, res)
 		end
 
 		if need_view then
+			headers['Content-type'] = 'text/html; charset=utf-8'
 			local r = view.layout(vpath, env)
 			if not r then
 				view.layout(root..'/view/default.html', env)
