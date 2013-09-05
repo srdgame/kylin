@@ -5,6 +5,7 @@ local http = require('kylin.http')
 local mvc = require('kylin.mvc')
 local sendFile = require('send').file
 local config = require('kylin.config')()
+local logc = require('logging.console')()
 
 local _M = {}
 
@@ -21,21 +22,28 @@ local function new(root)
 end
 
 local function redirect2App(req, res)
-	local url = '/admin/'
+	local url = '/admin'
 	if config.default_app then
-		url = '/'..config.default_app..'/'
+		url = '/'..config.default_app
 	end
 	return http.redirect(url)(req, res)
 end
 
 _M.get = function(req, res)
+	--logc:debug(req.url.path)
+	-- accessing the root
 	if not req.url.path or req.url.path == '/' then
 		return redirect2App(req, res)
 	end
 
+	-- accessing the <host>/hello
 	local root, apath = req.url.path:match('^/([^/]+)(/?.-)$')
 	if not root then
 		return redirect2App(req, res)
+	end
+
+	if not apath or string.len(apath) == 0 then
+		apath = '/'
 	end
 
 	if apath:match('^/static/') or apath:match('^/upload/') then
@@ -48,6 +56,7 @@ _M.get = function(req, res)
 		end
 	else
 		req.url.path = apath
+		req.url.app = root
 		local dispatcher = new('app/'..root)
 		dispatcher:dispatch(req, res)
 	end

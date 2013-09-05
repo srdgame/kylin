@@ -16,7 +16,7 @@ local function runController(cpath, func, env)
 	local f, err = loadfile(cpath, nil, env)
 	if not f then
 		logc:error(err)
-		return false
+		return false, err
 	else
 		local obj = f()
 		if obj[func] then
@@ -28,8 +28,6 @@ local function runController(cpath, func, env)
 				for k, v in pairs(re) do
 					env[k] = v
 				end
-			else
-				return false
 			end
 		else
 			logc:error("not such method")
@@ -40,23 +38,35 @@ local function runController(cpath, func, env)
 end
 
 local function sendFile(root, req, res)
+	--[[
 	logc:info('REQ----------------------------------')
 	logc:info(req)
 	logc:info('-------------------------------------')
+	]]--
 	local file, func = utils.parsePath(req.url.path)
 	local cpath = root.."/controller"..file..".lua"
 	local mpath = root..'/model'..file
-	local vpath = root..'/view'..file..'.html'
-	logc:debug({ file = cpath, func = func})
+
+	local vsub = file == '/index' and '/' or file..'/'
+	print('vsub', vsub)
+	local vpath = root..'/view'..vsub..func..'.html'
+
+	logc:debug({ file = file, func = func, controller = cpath, model = mpath, view = vpath})
 	local err, stat = wait(fs.stat(cpath))
 	if stat and stat.is_file then
 		local body = {}
 		local headers = {}
 		local env = {}
 		env = {
-			http = http,
+			__aburl = vsub, -- for relative path
+			redirect = function(...)
+				return http.redirect(...)(req, res)
+			end,
 			print = function(...) 
-				logc:debug(...)
+				logc:debug(table.concat({...}, '\t'))
+			end,
+			err = function(...)
+				logc:error(table.concat({...}, '\t'))
 			end,
 			out = function(...)
 				body[#body + 1] = table.concat({...}, '\t')

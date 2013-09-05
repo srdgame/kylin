@@ -73,13 +73,24 @@ local __all__ = {
 local helpers = {
 	BR = function() return '<br />' end,
 	HR = function() return '<hr />' end,
-	URL = function(...)
-		local t = {...}
-		for k, v in pairs(t) do
-			t[k].v = urlcode.escape(v) 
+	URL = function(path, vars)
+		local t = {}
+		table.insert(t, path)
+		if type(vars) == 'table' then
+			table.insert(t, '?')
+			local first = true
+			for k, v in pairs(vars) do
+				if not first then
+					table.insert('&')
+				else
+					first = false
+				end
+				table.insert(t, urlcode.escape(k))
+				table.insert(t, '=')
+				table.insert(t, urlcode.escape(v))
+			end
 		end
-		local url = table.concat(t, '/')
-		return url
+		return table.concat(t)
 	end,
 }
 
@@ -122,8 +133,8 @@ end
 
 _M.initHelper = function(env, root)
 	for k, v in pairs(h_env) do
-		--env[k] = function (...) env.out(v(...)) end
-		env[k] = v
+		env[k] = function (...) env.out(v(...)) end
+		--env[k] = v
 	end
 
 	env.include = function(file)
@@ -138,6 +149,15 @@ _M.initHelper = function(env, root)
 		if f:match('%.css$') then
 			env.out(env.LINK(nil, {href=file, rel='stylesheet'}))
 		end
+	end
+	env.URL = function(...)
+		local url = h_env.URL(...)
+		if url:match('^/.-') then
+			url = '/'..env.req.url.app..url
+		else
+			url = env.__aburl..url
+		end
+		return url
 	end
 end
 
