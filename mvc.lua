@@ -48,10 +48,9 @@ local function sendFile(root, req, res)
 	local mpath = root..'/model'..file
 
 	local vsub = file == '/index' and '/' or file..'/'
-	print('vsub', vsub)
 	local vpath = root..'/view'..vsub..func..'.html'
 
-	logc:debug({ file = file, func = func, controller = cpath, model = mpath, view = vpath})
+	logc:debug({ file = file, func = func, controller = cpath, model = mpath, vsub = vsub, view = vpath})
 	local err, stat = wait(fs.stat(cpath))
 	if stat and stat.is_file then
 		local body = {}
