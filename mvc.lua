@@ -109,10 +109,14 @@ function _M.handle(root, req, res)
 		if not req.url.path:match('/$') then
 			--print('retry with sub folder's index')
 			req.url.path = req.url.path..'/'
-			r, info = sendFile(root, req, res)
+			local file, func = utils.parsePath(req.url.path)
+			local cpath = root.."/controller"..file..".lua"
+			local err, stat = wait(fs.stat(cpath))
+			if stat and stat.is_file then
+				http.redirect(req.app..'/'..req.url.path, 301)(req, res)
+			end
 		end
 	end
-
 	return r, info
 end
 

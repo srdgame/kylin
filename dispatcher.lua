@@ -24,7 +24,7 @@ end
 local function redirect2App(req, res)
 	local url = '/admin'
 	if config.default_app then
-		url = '/'..config.default_app
+		url = '/'..config.default_app..'/'
 	end
 	return http.redirect(url)(req, res)
 end
@@ -43,7 +43,7 @@ _M.get = function(req, res)
 	end
 
 	if not apath or string.len(apath) == 0 then
-		apath = '/'
+		return http.redirect('/'..root..'/', 301)(req, res)
 	end
 
 	if apath:match('^/static/') or apath:match('^/upload/') then

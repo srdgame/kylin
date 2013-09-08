@@ -150,6 +150,16 @@ _M.initHelper = function(env, root)
 			env.out(env.LINK(nil, {href=file, rel='stylesheet'}))
 		end
 	end
+	env.include_css = function(file)
+		env.out(env.LINK(nil, {href=file, rel='stylesheet'}))
+	end
+	env.include_js = function(file)
+		env.out(env.SCRIPT("", {src=file, type='text/javascript', charset='utf-8'}))
+	end
+	env.include_html = function(file)
+		file = root..'/view/'..file
+		view.layout(file, env)
+	end
 	env.URL = function(...)
 		local url = h_env.URL(...)
 		if url:match('^/.-') then
