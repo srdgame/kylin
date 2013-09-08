@@ -26,11 +26,11 @@ local function redirect2App(req, res)
 	if config.default_app then
 		url = '/'..config.default_app..'/'
 	end
+	print('redirect to '..url);
 	return http.redirect(url)(req, res)
 end
 
 _M.get = function(req, res)
-	--logc:debug(req.url.path)
 	-- accessing the root
 	if not req.url.path or req.url.path == '/' then
 		return redirect2App(req, res)
@@ -43,7 +43,7 @@ _M.get = function(req, res)
 	end
 
 	if not apath or string.len(apath) == 0 then
-		return http.redirect('/'..root..'/', 301)(req, res)
+		return http.redirect('/'..root..'/')(req, res)
 	end
 
 	if apath:match('^/static/') or apath:match('^/upload/') then

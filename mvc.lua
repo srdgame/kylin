@@ -30,7 +30,7 @@ local function runController(cpath, func, env)
 				end
 			end
 		else
-			logc:error("not such method")
+			logc:error("no such method")
 			return false
 		end
 	end
@@ -79,7 +79,7 @@ local function sendFile(root, req, res)
 			res = res,
 		}
 
-		html.initHelper(env, root)
+		html.initHelper(env, req.url.app, root)
 
 		model.load(root..'/model', mpath, env)
 
@@ -107,13 +107,13 @@ function _M.handle(root, req, res)
 	local r, info = sendFile(root, req, res)
 	if not r then
 		if not req.url.path:match('/$') then
-			--print('retry with sub folder's index')
 			req.url.path = req.url.path..'/'
 			local file, func = utils.parsePath(req.url.path)
 			local cpath = root.."/controller"..file..".lua"
 			local err, stat = wait(fs.stat(cpath))
 			if stat and stat.is_file then
-				http.redirect(req.app..'/'..req.url.path, 301)(req, res)
+				http.redirect('/'..req.url.app..req.url.path)(req, res)
+				return true
 			end
 		end
 	end

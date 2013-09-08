@@ -131,7 +131,7 @@ for k, v in pairs(__all__) do
 	end
 end
 
-_M.initHelper = function(env, root)
+_M.initHelper = function(env, app, root)
 	for k, v in pairs(h_env) do
 		env[k] = function (...) env.out(v(...)) end
 		--env[k] = v
@@ -140,8 +140,7 @@ _M.initHelper = function(env, root)
 	env.include = function(file)
 		local f = file:lower()
 		if f:match('%.html$') or f:match('%.htm$') then
-			file = root..'/view/'..file
-			view.layout(file, env)
+			env.include_html(file)
 		end
 		if f:match('%.js$') then
 			env.include_js(file)
@@ -151,14 +150,27 @@ _M.initHelper = function(env, root)
 		end
 	end
 	env.include_css = function(file)
+		if not (file:match('://') or file:match('^/')) then
+			file = '/'..app..'/static/'..file
+		end
 		env.out(env.LINK(nil, {href=file, rel='stylesheet'}))
 	end
 	env.include_js = function(file)
+		if not (file:match('://') or file:match('^/')) then
+			file = '/'..app..'/static/'..file
+		end
 		env.out(env.SCRIPT("", {src=file, type='text/javascript', charset='utf-8'}))
 	end
 	env.include_html = function(file)
 		file = root..'/view/'..file
 		view.layout(file, env)
+	end
+	env.URL = function(...)
+		local url = h_env.URL(...)
+		if not (url:match('://') or url:match('^/')) then
+			url = '/'..app..'/static/'..url
+		end
+		return url
 	end
 end
 

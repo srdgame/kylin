@@ -9,7 +9,7 @@ _M.redirect = function (location, how, client_side)
 			if client_side and request.ajax then
 				res(200, {}, {'kylin-redirect-location:', location})
 			else
-				res(how, {Location=location}, {'You are being redirected to <a href="'..req.url.path..location..'">here</a>'})
+				res(how, {Location=location}, {'You are being redirected to <a href="'..location..'">here</a>'})
 			end
 		else
 			res(200, {}, {'kylin-component-command:', 'window.location.reload(true)'})
