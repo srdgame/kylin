@@ -144,10 +144,10 @@ _M.initHelper = function(env, root)
 			view.layout(file, env)
 		end
 		if f:match('%.js$') then
-			env.out(env.SCRIPT("", {src=file, type='text/javascript', charset='utf-8'}))
+			env.include_js(file)
 		end
 		if f:match('%.css$') then
-			env.out(env.LINK(nil, {href=file, rel='stylesheet'}))
+			env.include_css(file)
 		end
 	end
 	env.include_css = function(file)
@@ -159,15 +159,6 @@ _M.initHelper = function(env, root)
 	env.include_html = function(file)
 		file = root..'/view/'..file
 		view.layout(file, env)
-	end
-	env.URL = function(...)
-		local url = h_env.URL(...)
-		if url:match('^/.-') then
-			url = '/'..env.req.url.app..url
-		else
-			url = env.__aburl..url
-		end
-		return url
 	end
 end
 
