@@ -27,7 +27,12 @@ local function loadModels(root, path, env)
 		for k,v in pairs(files) do 
 		    print('loading model:', v)
 			local m = loadfile(v, nil, env)
-			m()
+			local t = m()
+			if t then
+				for k, v in pairs(t) do
+					env[k] = v
+				end
+			end
 		end
 		callback()
 	end)

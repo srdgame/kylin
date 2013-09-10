@@ -15,5 +15,5 @@ end
 return {
 	index = index,
 	hello = function () return "hello world\n" end,
-	about = function () redirect(URL('hello')) end
+	about = function () redirect('hello') end
 }

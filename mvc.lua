@@ -12,6 +12,9 @@ local utils = require('kylin.utils')
 
 local _M = {}
 
+-- return 
+-- 1. whether there is an controller
+-- 2. whether need to go through the models and views
 local function runController(cpath, func, env)
 	local f, err = loadfile(cpath, nil, env)
 	if not f then
@@ -20,18 +23,20 @@ local function runController(cpath, func, env)
 	else
 		local obj = f()
 		if obj[func] then
-			local re = obj[func]()
+			local re, info = obj[func]()
 			if type(re) == 'string' then
 				env.out(re)
-				return true
+				return true, false
 			elseif type(re) == 'table' then
 				for k, v in pairs(re) do
 					env[k] = v
 				end
+				return true, true
+			else
+				return true, false
 			end
 		else
-			logc:error("no such method")
-			return false
+			return false, "no such method"
 		end
 	end
 	return true, true
@@ -113,11 +118,12 @@ function _M.handle(root, req, res)
 			local err, stat = wait(fs.stat(cpath))
 			if stat and stat.is_file then
 				http.redirect('/'..req.url.app..req.url.path)(req, res)
-				return true
 			end
+		else
+			logc:error(info)
+			res(404, {}, {})
 		end
 	end
-	return r, info
 end
 
 return _M

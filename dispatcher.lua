@@ -12,9 +12,7 @@ local _M = {}
 local class = {}
 
 function class:dispatch(req, res) 
-	if not mvc.handle(self.root or ".", req, res) then
-		res(404, {}, {})
-	end
+	mvc.handle(self.root or ".", req, res)
 end
 
 local function new(root)
@@ -26,7 +24,6 @@ local function redirect2App(req, res)
 	if config.default_app then
 		url = '/'..config.default_app..'/'
 	end
-	print('redirect to '..url);
 	return http.redirect(url)(req, res)
 end
 
@@ -44,6 +41,10 @@ _M.get = function(req, res)
 
 	if not apath or string.len(apath) == 0 then
 		return http.redirect('/'..root..'/')(req, res)
+	end
+
+	if apath:match('^/session') then
+		return res(403, {}, {})
 	end
 
 	if apath:match('^/static/') or apath:match('^/upload/') then
