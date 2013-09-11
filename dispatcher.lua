@@ -63,8 +63,11 @@ _M.get = function(req, res)
 	end
 end
 
+--[[
 _M.post = function(req, res)
 end
+]]--
+_M.post = _M.get
 
 _M.put = function(req, res)
 end

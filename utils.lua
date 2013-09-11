@@ -1,4 +1,5 @@
 local lfs = require('lfs')
+local urlcode = require('kylin.urlcode')
 
 local function enumfiles (path, pattern, r_table, intofolder)
 	r_table = r_table or {}

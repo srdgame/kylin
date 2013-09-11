@@ -42,12 +42,16 @@ local function runController(cpath, func, env)
 	return true, true
 end
 
+local function initEnv(env)
+	env.table = table
+	env.pairs = pairs
+	env.string = string
+end
+
 local function sendFile(root, req, res)
-	--[[
 	logc:info('REQ----------------------------------')
 	logc:info(req)
 	logc:info('-------------------------------------')
-	]]--
 	local file, func = utils.parsePath(req.url.path)
 	local cpath = root.."/controller"..file..".lua"
 	local mpath = root..'/model'..file
@@ -79,10 +83,12 @@ local function sendFile(root, req, res)
 				headers[key] = val
 			end,
 			cookies = req.cookies,
+			urlcode = require('kylin.urlcode'),
 			status = 200,
 			req = req,
 			res = res,
 		}
+		initEnv(env)
 
 		html.initHelper(env, req.url.app, root)
 
