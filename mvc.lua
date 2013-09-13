@@ -46,12 +46,15 @@ local function initEnv(env)
 	env.table = table
 	env.pairs = pairs
 	env.string = string
+	env.wait = wait
+	env.await = await
 end
 
 local function sendFile(root, req, res)
 	logc:info('REQ----------------------------------')
 	logc:info(req)
 	logc:info('-------------------------------------')
+
 	local file, func = utils.parsePath(req.url.path)
 	local cpath = root.."/controller"..file..".lua"
 	local mpath = root..'/model'..file
@@ -124,11 +127,11 @@ function _M.handle(root, req, res)
 			local err, stat = wait(fs.stat(cpath))
 			if stat and stat.is_file then
 				http.redirect('/'..req.url.app..req.url.path)(req, res)
+				return
 			end
-		else
-			logc:error(info)
-			res(404, {}, {})
 		end
+		logc:error(info)
+		res(404, {}, {})
 	end
 end
 
