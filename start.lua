@@ -34,7 +34,7 @@ app = require('error-document')(app, {
 app = require('kylin.url')(app)
 
 app = require('autoheaders')(app)
---app = require('log')(app)
+app = require('log')(app)
 
 createServer(host, port, socketHandler(app))
 

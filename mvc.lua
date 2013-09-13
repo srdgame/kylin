@@ -39,7 +39,6 @@ local function runController(cpath, func, env)
 			return false, "no such method"
 		end
 	end
-	return true, true
 end
 
 local function initEnv(env)
@@ -73,7 +72,7 @@ local function sendFile(root, req, res)
 		env = {
 			__aburl = vsub, -- for relative path
 			redirect = function(...)
-				return http.redirect(...)(req, res)
+				http.redirect(...)(req, res)
 			end,
 			print = function(...) 
 				logc:debug(table.concat({...}, '\t'))
@@ -103,13 +102,14 @@ local function sendFile(root, req, res)
 		if not r then
 			return false
 		end
+		if not need_view then
+			return true
+		end
 
-		if need_view then
-			headers['Content-type'] = 'text/html; charset=utf-8'
-			local r = view.layout(vpath, env)
-			if not r then
-				view.layout(root..'/view/default.html', env)
-			end
+		headers['Content-type'] = 'text/html; charset=utf-8'
+		local r = view.layout(vpath, env)
+		if not r then
+			view.layout(root..'/view/default.html', env)
 		end
 		res(200, headers, body)
 		return true

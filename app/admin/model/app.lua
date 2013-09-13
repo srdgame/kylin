@@ -1,11 +1,15 @@
 --- load applications 
 --
-
-local function test()
+local utils = require ('kylin.utils')
+local function enum()
+	local folders = utils.enumFolders('app')
+	for k, v in pairs(folders) do 
+		print(k, v)
+	end
 end
 
-local function login(password)
-	return password == 'abc'
-end
-
-return {test = test, login = login}
+return {
+	app = {
+		enum = enum,
+	}
+}

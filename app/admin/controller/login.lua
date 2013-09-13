@@ -10,15 +10,20 @@ return {
 			password = req.posts.password
 		end
 
-		if password and login(password) then
+		if password and auth.login(password) then
 			print('login sucessfully!!!, password:', password)
 			req.session.data = password
 			print('submit', req.session.data)
-			redirect(URL('/'))
+			return redirect(URL(''))
 		else
 			print('login failed!!!')
-			redirect(URL('login'))
+			return redirect(URL('login'))
 		end
 
+	end,
+	logout = function()
+		print('logout user!!!')
+		req.session.data = nil
+		return redirect(URL(''))
 	end,
 }

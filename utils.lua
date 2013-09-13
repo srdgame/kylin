@@ -25,6 +25,27 @@ local function enumfiles (path, pattern, r_table, intofolder)
 	end
 end
 
+local function enumFolders(path, r_table)
+	local r_table = r_table or {}
+
+	if lfs.attributes(path, 'mode') ~= 'directory' then
+		return r_table
+	end
+	for file in lfs.dir(path) do
+		if file ~= "." and file ~= ".." then
+			local f = path..'/'..file
+
+			local ty = lfs.attributes (f, 'mode') 
+			--print(ty, f)
+			if ty == "directory"  then
+				table.insert(r_table, f)
+			end
+		end
+	end
+
+	return r_table
+end
+
 local function parsePath(path)
 	if not path or path == '/' then
 		return '/index', 'index'
@@ -44,6 +65,7 @@ local function parsePath(path)
 end
 
 return {
+	enumFolders = enumFolders,
 	enumfiles = enumfiles,
 	parsePath = parsePath, 
 }
