@@ -167,7 +167,6 @@ _M.initHelper = function(env, app, root)
 	end
 	env.URL = function(...)
 		local url = h_env.URL(...)
-		print(url)
 		if not (url:match('://') or url:match('^/')) then
 			url = '/'..app..'/'..url
 		end

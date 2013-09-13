@@ -1,6 +1,6 @@
 local function index()
 	if not req.session.data  then
-		redirect(URL('login'))
+		return redirect(URL('login'))
 	end
 
 	if test_model then
