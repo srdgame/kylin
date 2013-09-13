@@ -48,6 +48,7 @@ return function(app, options)
 
 		app(req, function(code, headers, body)
 			req.cookies[options.key] = req.session
+			options.save(req.session)
 			res(code, headers, body)
 		end)
 	end

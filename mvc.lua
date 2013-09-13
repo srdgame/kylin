@@ -51,9 +51,11 @@ local function initEnv(env)
 end
 
 local function sendFile(root, req, res)
+	--[[
 	logc:info('REQ----------------------------------')
 	logc:info(req)
 	logc:info('-------------------------------------')
+	]]--
 
 	local file, func = utils.parsePath(req.url.path)
 	local cpath = root.."/controller"..file..".lua"

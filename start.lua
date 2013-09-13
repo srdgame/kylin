@@ -23,6 +23,7 @@ end
 ]]
 
 app = require('kylin.posts')(app)
+app = require('kylin.query')(app)
 app = require('kylin.session')(app, config.settings().session)
 app = require('kylin.cookies').web(app)
 

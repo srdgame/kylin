@@ -32,10 +32,6 @@ return function(app)
 					}, err)
 				end
 			end)
-		elseif req.method == 'GET' then
-			local querys = {}
-			urlcode.parsequery(req.url.query, querys)
-			req.url.query = querys
 		end
 
 		app(req, function(code, headers, body)

@@ -4,4 +4,8 @@
 local function test()
 end
 
-return {test = test}
+local function login(password)
+	return password == 'abc'
+end
+
+return {test = test, login = login}
