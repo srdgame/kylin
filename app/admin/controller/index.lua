@@ -1,8 +1,9 @@
 local function index()
-	if not req.session.data  then
+	if not req.session.data then
 		return redirect(URL('login'))
 	end
 
+	print('now', 'break', req.session.data)
 	if test_model then
 		test_model()
 	else

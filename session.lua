@@ -9,7 +9,7 @@ local newSession = function(key, id, path, span)
 	id = id or ('KYLIN'..math.random(0, 0xffffffff)..':'..math.random(0, 0xffffffff))
 	local time = span and os.time() + span
 	local session = cookies.newCookie(key, id, path, time, nil, true)
-	session.data = {}
+	session.data = nil
 	return session
 end
 

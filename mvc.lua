@@ -50,12 +50,6 @@ local function initEnv(env)
 end
 
 local function sendFile(root, req, res)
-	--[[
-	logc:info('REQ----------------------------------')
-	logc:info(req)
-	logc:info('-------------------------------------')
-	]]--
-
 	local file, func = utils.parsePath(req.url.path)
 	local cpath = root.."/controller"..file..".lua"
 	local mpath = root..'/model'..file
@@ -63,7 +57,7 @@ local function sendFile(root, req, res)
 	local vsub = file == '/index' and '/' or file..'/'
 	local vpath = root..'/view'..vsub..func..'.html'
 
-	logc:debug({ file = file, func = func, controller = cpath, model = mpath, vsub = vsub, view = vpath})
+	--logc:debug({ file = file, func = func, controller = cpath, model = mpath, vsub = vsub, view = vpath})
 	local err, stat = wait(fs.stat(cpath))
 	if stat and stat.is_file then
 		local body = {}
