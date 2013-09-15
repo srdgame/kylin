@@ -96,14 +96,12 @@ local function sendFile(root, req, res)
 		if not r then
 			return false
 		end
-		if not need_view then
-			return true
-		end
-
-		headers['Content-type'] = 'text/html; charset=utf-8'
-		local r = view.layout(vpath, env)
-		if not r then
-			view.layout(root..'/view/default.html', env)
+		if need_view then
+			headers['Content-type'] = 'text/html; charset=utf-8'
+			local r = view.layout(vpath, env)
+			if not r then
+				view.layout(root..'/view/default.html', env)
+			end
 		end
 		res(200, headers, body)
 		return true
