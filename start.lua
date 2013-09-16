@@ -16,12 +16,6 @@ local port = os.getenv("KYLINK_PORT") or 8080
 
 loader.load(app)
 
---[[
-app = function(req, res) 
-	res(200, {}, {'hello world\n'})
-end
-]]
-
 app = require('kylin.posts')(app)
 app = require('kylin.query')(app)
 app = require('kylin.session')(app, config.settings().session)

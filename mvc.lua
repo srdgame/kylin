@@ -15,30 +15,31 @@ local _M = {}
 -- return 
 -- 1. whether there is an controller
 -- 2. whether need to go through the models and views
-local function runController(cpath, func, env)
+local function runController(cpath, func, env, view)
 	local f, err = loadfile(cpath, nil, env)
 	if not f then
 		logc:error(err)
 		return false, err
-	else
-		local obj = f()
-		if obj[func] then
-			local re, info = obj[func]()
-			if type(re) == 'string' then
-				env.out(re)
-				return true, false
-			elseif type(re) == 'table' then
-				for k, v in pairs(re) do
-					env[k] = v
-				end
-				return true, true
-			else
-				return true, false
-			end
-		else
-			return false, "no such method"
-		end
 	end
+	local obj = f()
+	if not obj[func] then
+		return false, "no such method"
+	end
+
+	local need_view = true
+	local re, info = obj[func]()
+	if type(re) == 'string' then
+		env.out(re)
+		need_view = false
+	elseif type(re) == 'table' then
+		for k, v in pairs(re) do
+			env[k] = v
+		end
+	else
+		return true, 'handled'
+	end
+	view(need_view)
+	return true, 'mvc done'
 end
 
 local function initEnv(env)
@@ -92,21 +93,20 @@ local function sendFile(root, req, res)
 
 		model.load(root..'/model', mpath, env)
 
-		local r, need_view = runController(cpath, func, env)
-		if not r then
-			return false
-		end
-		if need_view then
-			headers['Content-type'] = 'text/html; charset=utf-8'
-			local r = view.layout(vpath, env)
-			if not r then
-				view.layout(root..'/view/default.html', env)
+		return runController(cpath, func, env, function (need_view) 
+			if need_view then
+				headers['Content-type'] = 'text/html; charset=utf-8'
+				local r = view.layout(vpath, env)
+				if not r then
+					view.layout(root..'/view/default.html', env)
+				end
 			end
-		end
-		res(200, headers, body)
-		return true
+			print(200, #body)
+			res(200, headers, body)
+		end)
+	else
+		return false
 	end
-	return false
 end
 
 

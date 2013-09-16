@@ -10,6 +10,6 @@
 		$("#btnHide").bind("click", function(event) { $("#divMsg").hide(); });
 		$("#btnChange").bind("click", function(event) { $("#divMsg").html("Hello World, too!"); });      
 	</script>
-	<input id="btnLogout" type="button" value="登出" action="login/logout"/>
+	<input id="btnLogout" type="button" value="登出" onclick="window.location.href='login/logout'" />
 </div>
 <? include 'footer.html'?>
