@@ -14,18 +14,14 @@ local function enum()
 end
 
 local function enable()
+	log(req)
 	if req.method == 'GET' then
 		if req.url.query and req.url.query.app then
-			app.enable(req.url.query.app, true)
-		end
-	end
-	redirect('.');
-end
-
-local function disable()
-	if req.method == 'GET' then
-		if req.url.query and req.url.query.app then
-			app.enable(req.url.query.app, false)
+			local enable = true
+			if not req.url.query.enable or req.url.query.enable == 'false' then
+				enable = false
+			end
+			app.enable(req.url.query.app, enable)
 		end
 	end
 	redirect('.');
@@ -37,5 +33,4 @@ return {
 	about = function () redirect('hello') end,
 	enum  = enum,
 	enable = enable,
-	disable = disable,
 }

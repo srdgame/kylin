@@ -8,7 +8,9 @@ local function enum()
 	local apps = {}
 	for k, v in pairs(folders) do 
 		local s = string.match(v, "app/(.+)")
-		table.insert(apps, s)
+		table.insert(apps, { name=s, enable = config.apps()[s] })
+	end
+	for k, v in pairs(apps) do
 	end
 	return apps
 end

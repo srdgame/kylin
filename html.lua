@@ -81,13 +81,13 @@ local helpers = {
 			local first = true
 			for k, v in pairs(vars) do
 				if not first then
-					table.insert('&')
+					table.insert(t, '&')
 				else
 					first = false
 				end
-				table.insert(t, urlcode.escape(k))
+				table.insert(t, urlcode.escape(tostring(k)))
 				table.insert(t, '=')
-				table.insert(t, urlcode.escape(v))
+				table.insert(t, urlcode.escape(tostring(v)))
 			end
 		end
 		return table.concat(t)

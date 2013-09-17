@@ -30,10 +30,12 @@ _M.save = function()
 
 	local r = await(fs.write(fd, 'return {\n'))
 	for k, v in pairs(apps) do
-		if v then
-			r = await(fs.write(fd, '\t'..k..' = true,\n'))
-		else
-			r = await(fs.write(fd, '\t'..k..' = false,\n'))
+		if k ~= 'admin' then
+			if v then
+				r = await(fs.write(fd, '\t'..k..' = true,\n'))
+			else
+				r = await(fs.write(fd, '\t'..k..' = false,\n'))
+			end
 		end
 	end
 	r = await(fs.write(fd, '}\n'))

@@ -31,7 +31,6 @@ local function appEnable(app)
 	if app == 'admin' then
 		return true -- admin is always enabled
 	end
-	print(config.apps())
 	return config.apps()[app]
 end
 

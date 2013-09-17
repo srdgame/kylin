@@ -1,17 +1,6 @@
 
 <? include 'header.html' ?>
 <div class="content">
-	<div id="divMsg">Hello World!</div>
-	<input id="btnShow" type="button" value="显示" />
-	<input id="btnHide" type="button" value="隐藏" /><br />
-	<input id="btnChange" type="button" value="修改内容为 Hello World, too!" />
-	<script type="text/javascript" >
-		$("#btnShow").bind("click", function(event) { $("#divMsg").show(); });
-		$("#btnHide").bind("click", function(event) { $("#divMsg").hide(); });
-		$("#btnChange").bind("click", function(event) { $("#divMsg").html("Hello World, too!"); });      
-	</script>
-	<br>
-	<br>
 	<input id="btnLogout" type="button" value="登出" onclick="window.location.href='login/logout'" />
 	<br>
 	<br>
@@ -19,12 +8,23 @@
 	for k, v in pairs(apps) do
 	?>
 		<div class="app_name">
-			<?=v?>
-			<input type="button" value="Access" onclick="window.location.href='<?=URL('/'..v)?>'" />
-			<? if v ~= 'admin' then ?>
-			<input type="button" value="Enable" onclick="window.location.href='<?=URL('enable', {app=v})?>'" />
-			<input type="button" value="Disable" onclick="window.location.href='<?=URL('disable', {app=v})?>'" />
+			<label> Application: </label>
+			<?=v.name?>
+			<? if v.name ~= 'admin' then ?>
+			<!-- <input type="button" value="Access" onclick="window.location.href='<?=URL('/'..v.name)?>'" /> -->
+			<input type="button" value="Access" onclick="window.open('<?=URL('/'..v.name)?>')" />
+			<input type="checkbox" name="<?='btnEnable'..v.name?>" onclick="
+				if(this.checked) 
+				{
+					window.location.href='<?=URL('enable', {app=v.name, enable=true})?>'
+				}
+				else
+				{
+					window.location.href='<?=URL('enable', {app=v.name, enable=false})?>'
+				}
+			" <?=v.enable and 'checked' or ''?> />
 			<? end ?>
+			<input type="button" value="Edit" onclick="window.location.href='<?=URL('edit', {app=v.name}) ?>'" />
 			<br>
 			<br>
 		</div>
