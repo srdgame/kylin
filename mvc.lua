@@ -35,8 +35,6 @@ local function runController(cpath, func, env, view)
 		for k, v in pairs(re) do
 			env[k] = v
 		end
-	else
-		return true, 'handled'
 	end
 	view(need_view)
 	return true, 'mvc done'
@@ -64,10 +62,15 @@ local function sendFile(root, req, res)
 		local body = {}
 		local headers = {}
 		local env = {}
+		local inter_res = false
 		env = {
 			__aburl = vsub, -- for relative path
 			redirect = function(...)
 				http.redirect(...)(req, res)
+				inter_res = true
+			end,
+			log = function(obj)
+				logc:debug(obj)
 			end,
 			print = function(...) 
 				logc:debug(table.concat({...}, '\t'))
@@ -94,11 +97,17 @@ local function sendFile(root, req, res)
 		model.load(root..'/model', mpath, env)
 
 		return runController(cpath, func, env, function (need_view) 
+			if inter_res then
+				return
+			end
 			if need_view then
 				headers['Content-type'] = 'text/html; charset=utf-8'
 				local r = view.layout(vpath, env)
 				if not r then
-					view.layout(root..'/view/default.html', env)
+					r = view.layout(root..'/view/default.html', env)
+				end
+				if not r then
+					logc:error('failed to load view for '..req.url.app..req.url.path)
 				end
 			end
 			print(200, #body)

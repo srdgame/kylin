@@ -17,7 +17,7 @@ local function loadModels(root, path, env)
 	--print('loadModels', root)
 	local files = {}
 	await(function(callback)
-		utils.enumfiles(root, "%.lua", files, true)
+		utils.enumfiles(root, "%.lua$", files, true)
 		callback()
 	end)
 
@@ -27,7 +27,10 @@ local function loadModels(root, path, env)
 		for k,v in pairs(files) do 
 --		    print('loading model:', v)
 			--local m = loadfile(v, nil, env)
-			local m = loadfile(v)
+			local m, err = loadfile(v)
+			if not m then
+				print('ERROR WHEN LOADING MODULE '..v, err)
+			end
 			local t = m()
 			if t then
 				for k, v in pairs(t) do

@@ -27,6 +27,14 @@ local function redirect2App(req, res)
 	return http.redirect(url)(req, res)
 end
 
+local function appEnable(app)
+	if app == 'admin' then
+		return true -- admin is always enabled
+	end
+	print(config.apps())
+	return config.apps()[app]
+end
+
 _M.get = function(req, res)
 	-- accessing the root
 	if not req.url.path or req.url.path == '/' then
@@ -37,6 +45,11 @@ _M.get = function(req, res)
 	local root, apath = req.url.path:match('^/([^/]+)(/?.-)$')
 	if not root then
 		return redirect2App(req, res)
+	end
+
+	-- check the enable/disable
+	if not appEnable(root) then
+		return res(404, {}, {})
 	end
 
 	if not apath or string.len(apath) == 0 then
