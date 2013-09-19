@@ -17,7 +17,7 @@ local function loadModels(root, path, env)
 	--print('loadModels', root)
 	local files = {}
 	await(function(callback)
-		utils.enumfiles(root, "%.lua$", files, true)
+		utils.enumFiles(root, "%.lua$", true, files)
 		callback()
 	end)
 

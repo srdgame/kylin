@@ -1,10 +1,10 @@
 local lfs = require('lfs')
 local urlcode = require('kylin.urlcode')
 
-local function enumfiles (path, pattern, r_table, intofolder)
+local function enumFiles (path, pattern, intofolder, r_table)
 	r_table = r_table or {}
 	if lfs.attributes(path, 'mode') ~= 'directory' then
-		return
+		return r_table
 	end
 	for file in lfs.dir(path) do
 		if file ~= "." and file ~= ".." then
@@ -13,7 +13,7 @@ local function enumfiles (path, pattern, r_table, intofolder)
 			local ty = lfs.attributes (f, 'mode') 
 			--print(ty, f)
 			if ty == "directory" and intofolder then
-				enumfiles (f, pattern, r_table, intofolder)
+				enumFiles (f, pattern, intofolder, r_table)
 			else
 				if ty == 'file' then
 					if string.match(f, pattern) then
@@ -23,6 +23,7 @@ local function enumfiles (path, pattern, r_table, intofolder)
 			end
 		end
 	end
+	return r_table
 end
 
 local function enumFolders(path, r_table)
@@ -66,6 +67,6 @@ end
 
 return {
 	enumFolders = enumFolders,
-	enumfiles = enumfiles,
+	enumFiles = enumFiles,
 	parsePath = parsePath, 
 }

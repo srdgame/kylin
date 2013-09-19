@@ -1,5 +1,60 @@
 <? include('header.html') ?>
-<label>
+<div id="app_title">
 <?=req.url.query.app?>
-</label>
+</div>
+
+<div class="app_file_cate">
+	Controllers
+</div>
+
+<? 
+function filePretty(file)
+	local short = file:match("app/"..req.url.query.app.."/[^/]+/(.+)")
+?>
+	<div class="file">
+		<div class="file_key">
+			<?=short ?>
+		</div>
+		<div class="file_path">
+			<?=file ?>
+		</div>
+		<input type="button" value="Edit" onclick="window.location.href='<?=URL('edit/editor', {app=req.url.query.app, file=file}) ?>'" />
+	</div>
+	</div>
+<?
+end
+?>
+<?
+	for k, v in pairs(app.controllers) do
+		filePretty(v)
+	end
+?>
+
+<div class="app_file_cate">
+	Models
+</div>
+<?
+	for k, v in pairs(app.models) do
+		filePretty(v)
+	end
+?>
+
+<div class="app_file_cate">
+	Views
+</div>
+<?
+	for k, v in pairs(app.views) do
+		filePretty(v)
+	end
+?>
+
+<div class="app_file_cate">
+	Static files
+</div>
+<?
+	for k, v in pairs(app.statics) do
+		filePretty(v)
+	end
+?>
+
 <? include('footer.html') ?>

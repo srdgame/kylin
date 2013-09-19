@@ -8,4 +8,6 @@
 <? --include("css/style.css")?>
 
 <? include('css/normalize.css')?>
-<? include('css/login/style.css')?>
+<? print(req.url.path) ?>
+<? if req.url.path:match("^/login") then include('css/login/style.css') end?>
+<? if req.url.path:match("^/edit") then include('css/edit/style.css') end?>

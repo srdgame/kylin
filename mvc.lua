@@ -23,7 +23,7 @@ local function runController(cpath, func, env, view)
 	end
 	local obj = f()
 	if not obj[func] then
-		return false, "no such method"
+		return false, "Can not find method "..func.." from file "..cpath
 	end
 
 	local need_view = true

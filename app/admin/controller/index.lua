@@ -10,7 +10,7 @@ local function enum()
 end
 
 local function enable()
-	log(req)
+--	log(req)
 	if req.method == 'GET' then
 		if req.url.query and req.url.query.app then
 			local enable = true
