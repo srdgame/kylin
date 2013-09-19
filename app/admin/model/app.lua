@@ -10,8 +10,11 @@ local function enum()
 		local s = string.match(v, "app/(.+)")
 		table.insert(apps, { name=s, enable = config.apps()[s] })
 	end
+	--[[
 	for k, v in pairs(apps) do
+		print(k, v.name)
 	end
+	]]
 	return apps
 end
 

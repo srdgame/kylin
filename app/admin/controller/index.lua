@@ -1,8 +1,4 @@
 local function index()
-	if not req.session.data then
-		return redirect(URL('login'))
-	end
-
 	local apps = app.enum()
 
 	return { apps = apps }
@@ -28,9 +24,9 @@ local function enable()
 end
 
 return {
-	index = index,
+	index = auth.check(index),
 	hello = function () return "hello world\n" end,
 	about = function () redirect('hello') end,
-	enum  = enum,
-	enable = enable,
+	enum  = auth.check(enum),
+	enable = auth.check(enable),
 }

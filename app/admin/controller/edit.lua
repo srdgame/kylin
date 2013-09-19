@@ -1,10 +1,12 @@
 
+local function index()
+	if req.url.query.app then
+		return {}
+	else
+		return redirect('/')
+	end
+end
+
 return {
-	index = function() 
-		if req.url.query.app then
-			return {}
-		else
-			return redirect('/')
-		end
-	end,
+	index = auth.check(index)
 }

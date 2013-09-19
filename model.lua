@@ -31,7 +31,7 @@ local function loadModels(root, path, env)
 			if not m then
 				print('ERROR WHEN LOADING MODULE '..v, err)
 			end
-			local t = m()
+			local t = m(env)
 			if t then
 				for k, v in pairs(t) do
 					env[k] = v

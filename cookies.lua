@@ -8,6 +8,8 @@ function cookie:tostring()
 	end
 	if self.path then
 		value[#value + 1] = 'Path='..self.path
+	else
+		value[#value + 1] = 'Path=/'
 	end
 	if self.domain then
 		value[#value + 1] = 'Domain='..self.domain
