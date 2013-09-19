@@ -21,7 +21,7 @@ local function file()
 	if req.url.query.app and req.url.query.file then
 		return edit.loadFile(req.url.query.file)
 	else
-		return redirect(URL(''))
+		return inerRes(401, {}, {})
 	end
 end
 

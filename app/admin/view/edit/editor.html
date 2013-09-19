@@ -2,7 +2,9 @@
 <? include('header.html') ?>
 
 <div id="app_title">
-<?=req.url.query.app?>
+	<a href="<?=URL("edit/", {app=req.url.query.app})?>" >
+		<?=req.url.query.app?>
+	</a>
 </div>
 
 <? local file = req.url.query.file ?>
@@ -10,10 +12,37 @@
 	<?=file?>
 </div>
 
-<div id="editor">function foo(items) {
-	var x = "All this is syntax highlighted";
-	return x;
-	}</div>
+
+<script>
+	$(function() {
+		$( "#save" ).button({
+			//text: false,
+			icons: {
+				primary: "ui-icon-disk"
+			}
+		})
+		.click(function(){
+			save_file2()
+		});
+		$( "#reload" ).button({
+			//text: false,
+			icons: {
+				primary: "ui-icon-document"
+			}
+		})
+		.click(function(){
+			reload_file()
+		});
+	});
+</script>
+
+<div id="toolbar" class="ui-widget-header ui-corner-all">
+	<button id="save">Save file</button>
+	<button id="reload">Reload file</button>
+</div>
+
+
+<div id="editor">file is loading....</div>
 
 <? include("http://cdn.staticfile.org/ace/1.1.01/ace.js") ?>
 <? include("http://cdn.staticfile.org/ace/1.1.01/mode-luapage.js") ?>
@@ -38,28 +67,51 @@
 	end
 	?>
 	editor.getSession().setMode("ace/mode/<?=mode?>");
-	$.get("file", { file: "<?=file?>" }, function(data) {
-		editor.getSession().setValue(data)
-	})
-	.done(function() {
-		//alert( "file load success" );
-	})
-	.fail(function() {
-		editor.getSession().setValue("failed to load file")
-	});
-
+	reload_file()
+	
+	function save_file(editor) {
+		var content = editor.getSession().getValue();
+		$.post("save", { file: "<?=file?>", content: content },
+		function(data){
+		//	alert("Data Saved: " + data);
+		})
+		.done(function() {
+			$("textarea#output_box").append("Data Saved successfully!!\n");
+			//alert("Data Saved successfully!!");
+		})
+		.fail(function() {
+			$("textarea#output_box").append("Failed to save content to file!!\n");
+			//alert("Failed to save content to file!!");
+		});
+	}
+	function save_file2() {
+		save_file(editor)
+	}
+	function reload_file() {
+		$.get("file", { app: "<?=req.url.query.app?>", file: "<?=file?>" }, function(data) {
+			editor.getSession().setValue(data);
+		})
+		.done(function() {
+			//alert( "file load success" );
+		})
+		.fail(function() {
+			editor.getSession().setValue("failed to load file");
+		});
+	}
 	editor.commands.addCommand({
 		name: 'myCommand',
-		bindKey: {win: 'Ctrl-M',  mac: 'Command-M'},
+		bindKey: {win: 'Ctrl-S',  mac: 'Command-S'},
 		exec: function(editor) {
-			var content = editor.getSession().getValue();
-			$.post("save", { file: "<?=file?>", content: content },
-			function(data){
-				alert("Data Saved: " + data);
-			});
+			save_file(editor)	
 		},
 		readOnly: true // false if this command should not apply in readOnly mode
 	});
 </script>
+
+<div id="output">
+<textarea id="output_box">
+ready!!
+</textarea>
+</div>
 
 <? include('footer.html') ?>

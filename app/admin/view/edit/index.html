@@ -1,6 +1,8 @@
 <? include('header.html') ?>
 <div id="app_title">
-<?=req.url.query.app?>
+	<a href="<?=URL("edit/", {app=req.url.query.app})?>" >
+		<?=req.url.query.app?>
+	</a>
 </div>
 
 <div class="app_file_cate">
