@@ -17,26 +17,39 @@ local function listFiles(app)
 end
 
 local function loadFile(path)
-  local err, fd = wait(fs.open(path, "r"))
-  if not fd then
-	  return nil, 'file not exist'
-  end
+	local err, fd = wait(fs.open(path, "r"))
+	if not fd then
+		return nil, 'file not exist'
+	end
 
-  local content = {}
-  repeat
-	  local chunk = await(fs.read(fd, 100))
-	  if #chunk == 0 then
-		  chunk = nil
-	  end
-	  table.insert(content, chunk)
-  until not chunk
+	local content = {}
+	repeat
+		local chunk = await(fs.read(fd, 100))
+		if #chunk == 0 then
+			chunk = nil
+		end
+		table.insert(content, chunk)
+	until not chunk
 
-  return table.concat(content)
+	return table.concat(content)
+end
+
+local function saveFile(path, content)
+	print(path, content)
+	local err, fd = wait(fs.open(path, "w"))
+	if not fd then
+		return nil, 'file not exist'
+	end
+
+	local r = await(fs.write(fd, content))
+
+	return r
 end
 
 return {
 	edit = {
 		listFiles = listFiles,
 		loadFile = loadFile,
+		saveFile = saveFile,
 	}
 }

@@ -26,7 +26,11 @@ local function file()
 end
 
 local function save()
-	return req.posts.content
+	if edit.saveFile(req.posts.file, req.posts.content) then
+		return "File saving done"
+	else
+		return inerRes(500, {}, {})
+	end
 end
 
 return {
