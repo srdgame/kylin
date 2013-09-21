@@ -1,8 +1,21 @@
 
 #editor { 
-	margin-left: 250px;
+	margin-left: 15px;
 	margin-top: 15px;
-	width: 1000px;
+	width: 800px;
 	height: 300px;
+}
+
+#tree1 {
+	margin-top: 15px;
+}
+
+.container-folder {
+	float: left;
+	width: 30%;
+}
+.container-editor {
+	float: left;
+	width: 70%;
 }
 

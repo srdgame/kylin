@@ -6,8 +6,9 @@
 	</a>
 </div>
 
+<div class="container-folder">
 <div id="tree1" class="context-menu-folder" data-url="<?=URL("edit/fm", {app=req.url.query.app})?>"></div>
-
+</div>
 
 <script>
 	$(function() {
@@ -65,14 +66,13 @@
 			function(e) {
 				// Get the id from the 'node-id' data property
 				var node_id = $(e.target).data('node-id');
-				alert(node_id)
 
 				// Get the node from the tree
 				var node = $tree.tree('getNodeById', node_id);
 
 				if (node) {
 					// Display the node name
-					alert(node.id)
+					reload_file(node_id)
 				} else {
 					alert('message');
 				}
@@ -84,7 +84,6 @@
 				// Get the id from the 'node-id' data property
 				var node_id = $(e.target).data('node-id');
 				// 
-				alert("/" + node_id)
 				window.open("/"+ node_id);
 			}
 		);
@@ -93,6 +92,9 @@
 				var node = event.node;
 				//alert(node.name);
 //				$(".context-menu-folder").contextMenu();
+				var editor = ace.edit("editor");
+				editor.getSession().setValue("...");
+				editor.setReadOnly(true);
 			}
 		);
 
@@ -107,57 +109,105 @@
 
 </script>
 
-<div class="app_file_cate">
-	Controllers
+<div class="container-editor">
+
+<div id="toolbar" class="ui-widget-header ui-corner-all">
+	<button id="save">Save file</button>
+	<button id="reload">Reload file</button>
 </div>
 
-<? 
-function filePretty(file)
-	local short = file:match("app/"..req.url.query.app.."/[^/]+/(.+)")
-?>
-	<div class="file">
-		<div class="file_key">
-			<?=short ?>
-		</div>
-		<div class="file_path">
-			<?=file ?>
-		</div>
-		<input type="button" value="Edit" onclick="window.location.href='<?=URL('edit/editor', {app=req.url.query.app, file=file}) ?>'" />
-	</div>
-<?
-end
-?>
-<?
-	for k, v in pairs(app.controllers) do
-		filePretty(v)
-	end
-?>
 
-<div class="app_file_cate">
-	Models
+<div id="editor">file is loading....</div>
+
+<? include("http://cdn.staticfile.org/ace/1.1.01/ace.js") ?>
+<? include("http://cdn.staticfile.org/ace/1.1.01/mode-luapage.js") ?>
+<? include("http://cdn.staticfile.org/ace/1.1.01/mode-lua.js") ?>
+<? include("http://cdn.staticfile.org/ace/1.1.01/mode-css.js") ?>
+<? include("http://cdn.staticfile.org/ace/1.1.01/theme-monokai.js") ?>
+
+<script>
+	var editor = ace.edit("editor");
+	editor.setTheme("ace/theme/monokai");
+
+	<?
+	local mode = "javascript"
+	if file and file:match("%.lua$") then
+		mode = "lua"
+	end
+	if file and file:match("%.css$") then
+		mode = "css"
+	end
+	if file and file:match("%.html$") then
+		mode = "luapage"
+	end
+	?>
+	editor.getSession().setMode("ace/mode/<?=mode?>");
+
+	$( "#save" ).button({
+			//text: false,
+			icons: {
+				primary: "ui-icon-disk"
+			}
+		})
+		.click(function(){
+			save_file()
+		});
+		$( "#reload" ).button({
+			//text: false,
+			icons: {
+				primary: "ui-icon-document"
+			}
+		})
+		.click(function(){
+			var $tree = $('#tree1');
+			var node = $tree.tree('getSelectedNode');
+			reload_file(node.id)
+		});
+
+	function save_file() {
+		var $tree = $('#tree1');
+		var node = $tree.tree('getSelectedNode');
+		var content = editor.getSession().getValue();
+		$.post("save", { file: node.id, content: content },
+		function(data){
+		//	alert("Data Saved: " + data);
+		})
+		.done(function() {
+			$("textarea#output_box").append("Data Saved successfully!!\n");
+			//alert("Data Saved successfully!!");
+		})
+		.fail(function() {
+			$("textarea#output_box").append("Failed to save content to file!!\n");
+			//alert("Failed to save content to file!!");
+		});
+	}
+	function reload_file(filename) {
+		$.get("file", { app: "<?=req.url.query.app?>", file: filename }, function(data) {
+			editor.setReadOnly(false);
+			editor.getSession().setValue(data);
+		})
+		.done(function() {
+			//alert( "file load success" );
+		})
+		.fail(function() {
+			editor.getSession().setValue("failed to load file");
+		});
+	}
+	editor.commands.addCommand({
+		name: 'myCommand',
+		bindKey: {win: 'Ctrl-S',  mac: 'Command-S'},
+		exec: function(editor) {
+			save_file()	
+		},
+		readOnly: true // false if this command should not apply in readOnly mode
+	});
+</script>
+
+<div id="output">
+<textarea id="output_box">
+ready!!
+</textarea>
 </div>
-<?
-	for k, v in pairs(app.models) do
-		filePretty(v)
-	end
-?>
 
-<div class="app_file_cate">
-	Views
 </div>
-<?
-	for k, v in pairs(app.views) do
-		filePretty(v)
-	end
-?>
-
-<div class="app_file_cate">
-	Static files
-</div>
-<?
-	for k, v in pairs(app.statics) do
-		filePretty(v)
-	end
-?>
-
 <? include('footer.html') ?>

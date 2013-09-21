@@ -21,6 +21,7 @@ end
 local function loadFile(path)
 	local err, fd = wait(fs.open(path, "r"))
 	if not fd then
+		print(path, 'not exist')
 		return nil, 'file not exist'
 	end
 

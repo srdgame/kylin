@@ -19,10 +19,13 @@ end
 
 local function file()
 	if req.url.query.app and req.url.query.file then
-		return edit.loadFile(req.url.query.file)
-	else
-		return inerRes(401, {}, {})
+		local r, err = edit.loadFile(req.url.query.file)
+		if r then
+			return r
+		end
+		log(err)
 	end
+	return inerRes(401, {}, {})
 end
 
 local function save()
@@ -54,3 +57,4 @@ return {
 	save = auth.check(save),
 	fm = auth.check(fm),
 }
+

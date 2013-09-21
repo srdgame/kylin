@@ -1,5 +1,3 @@
-<? --include("css/style.css")?>
-
 <? include 'http://cdn.staticfile.org/jquery/1.9.1/jquery.js' ?>
 <? include 'http://cdn.staticfile.org/jqueryui/1.10.3/jquery-ui.js' ?>
 <? include 'http://cdn.staticfile.org/jqueryui/1.10.3/css/base/jquery.ui.all.css' ?>
@@ -12,3 +10,5 @@
 <? if req.url.path:match("^/edit") then include('jqtree/example.css') end?>
 <? if req.url.path:match("^/edit") then include('jquery.contextMenu/jquery.contextMenu.css') end?>
 <? if req.url.path:match("^/edit") then include('jquery.contextMenu/jquery.contextMenu.js') end?>
+
+<? include("css/style.css")?>
