@@ -1,9 +1,100 @@
 <? include('header.html') ?>
+
 <div id="app_title">
 	<a href="<?=URL("edit/", {app=req.url.query.app})?>" >
 		<?=req.url.query.app?>
 	</a>
 </div>
+
+<div id="tree1" class="context-menu-folder" data-url="<?=URL("edit/fm", {app=req.url.query.app})?>"></div>
+
+
+<script>
+	$(function() {
+		$.contextMenu({
+			selector: '.context-menu-folder', 
+			trigger: 'none',
+			callback: function(key, options) {
+				var m = "clicked: " + key;
+				window.console && console.log(m) || alert(m); 
+			},
+			items: {
+				"edit": {name: "Edit", icon: "edit"},
+				"cut": {name: "Cut", icon: "cut"},
+				"copy": {name: "Copy", icon: "copy"},
+				"paste": {name: "Paste", icon: "paste"},
+				"delete": {name: "Delete", icon: "delete"},
+				"sep1": "---------",
+				"quit": {name: "Quit", icon: "quit"}
+			}
+		});
+
+		var $tree = $('#tree1');
+		$tree.tree({
+			autoOpen: 1,
+			onCreateLi: function(node, $li) {
+				if (node.type == "file") {
+					// Append a link to the jqtree-element div.
+					// The link has an url '#node-[id]' and a data property 'node-id'.
+					$li.find('.jqtree-element').append(
+					'<a href="#node-'+ node.id +'" class="edit" data-node-id="'+
+						node.id +'">edit</a> <a href="#node-'+ node.id +'" class="addfile" data-node-id="'+
+						node.id +'"> addfile</a>'
+					);
+				}
+				if (node.type == "root") {
+					$li.find('.jqtree-element').append(
+					'<a href="#node-'+ node.id +'" class="browse" data-node-id="'+
+						node.id +'"> browse</a>'
+					);
+				}
+				if (node.type == "folder") {
+					$li.find('.jqtree-element').append(
+					'<a href="#node-'+ node.id +'" class="delete" data-node-id="'+
+						node.id +'"> delete</a> <a href="#node-'+ node.id +'" class="addfile" data-node-id="'+
+						node.id +'"> addfile</a>'
+					);
+				}
+			}
+		});
+
+		// Handle a click on the edit link
+		$tree.on(
+		'click', '.edit',
+			function(e) {
+				// Get the id from the 'node-id' data property
+				var node_id = $(e.target).data('node-id');
+				alert(node_id)
+
+				// Get the node from the tree
+				var node = $tree.tree('getNodeById', node_id);
+
+				if (node) {
+					// Display the node name
+					alert(node.id);
+				} else {
+					alert('message');
+				}
+			}
+		);
+		$tree.bind(
+			'tree.click', function(event) {
+				var node = event.node;
+				//alert(node.name);
+//				$(".context-menu-folder").contextMenu();
+			}
+		);
+
+		$tree.bind(
+			'tree.contextmenu', function(event) {
+				var node = event.node;
+				//alert(node.name)
+//				$(".context-menu-folder").contextMenu();
+			}
+		);
+	});
+
+</script>
 
 <div class="app_file_cate">
 	Controllers
@@ -21,7 +112,6 @@ function filePretty(file)
 			<?=file ?>
 		</div>
 		<input type="button" value="Edit" onclick="window.location.href='<?=URL('edit/editor', {app=req.url.query.app, file=file}) ?>'" />
-	</div>
 	</div>
 <?
 end

@@ -85,7 +85,7 @@ local function sendFile(root, req, res)
 			out = function(...)
 				body[#body + 1] = table.concat({...}, '\t')
 			end,
-			header = function(key, val)
+			setHeader = function(key, val)
 				headers[key] = val
 			end,
 			cookies = req.cookies,

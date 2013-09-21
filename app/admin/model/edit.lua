@@ -2,6 +2,8 @@ local utils = require ('kylin.utils')
 local wait = require('fiber').wait
 local await = require('fiber').await
 local fs = require('uv').fs
+local json = require ('json')
+local logc = require ('logging.console')()
 
 local function listFiles(app)
 	local controllers = utils.enumFiles('app/'..app..'/controller', "%.lua$", true)
@@ -31,6 +33,8 @@ local function loadFile(path)
 		table.insert(content, chunk)
 	until not chunk
 
+	fs.close(fd)
+
 	return table.concat(content)
 end
 
@@ -42,8 +46,68 @@ local function saveFile(path, content)
 	end
 
 	local r = await(fs.write(fd, content))
+	fs.close(fd)
 
 	return r
+end
+
+local function convert_to_json(files)
+	local r_table = {
+		label = files.name,
+		id = files.path,
+		type = files.type,
+		children = {},
+	}
+	if files.childs and #files.childs ~= 0 then
+		for k, v in pairs(files.childs) do
+			table.insert(r_table.children, convert_to_json(v))
+		end
+	end
+	return r_table
+end
+
+local function fm(app)
+	--[[
+	local file = {}
+	table.insert(file, {
+		label = "root",
+		id = "root",
+		type = "folder",
+		children = {
+			{
+				label = "child1",
+				id = "c1",
+				type = 'file',
+				children = {
+					label = "child3",
+					id = "c4",
+					type = "folder",
+				},
+				{
+					label = "child2",
+					id = "abc",
+					type = 'folder',
+				},
+			},
+			{
+				label = "child2",
+				id = "abc",
+				type = 'folder',
+			},
+		},
+	})]]--
+
+	local rtable = {name="root", type="root", path=app, childs = {}}
+	utils.enumPath('app/'..app, rtable.childs)
+	local t = convert_to_json(rtable)
+	t1 = {}
+	table.insert(t1, t)
+
+	--logc:info(t1)
+	--logc:info(file)
+	
+	return json.encode(t1)
+	--return json.encode(file)
 end
 
 return {
@@ -51,5 +115,6 @@ return {
 		listFiles = listFiles,
 		loadFile = loadFile,
 		saveFile = saveFile,
+		fm = fm,
 	}
 }

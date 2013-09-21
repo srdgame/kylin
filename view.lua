@@ -61,6 +61,7 @@ local function layout(path, env)
 			callback()
 		end)
 	until not chunk
+	fs.close(fd)
 	wait(function(callback)
 		--
 		local s = table.concat(topass)

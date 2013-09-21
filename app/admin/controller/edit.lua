@@ -33,9 +33,24 @@ local function save()
 	end
 end
 
+local function fm()
+	if not req.url.query.app then
+		return inerRes(500, {}, {})
+	end
+	if req.method == 'GET' then
+		-- read file system
+		setHeader("Content-Type", "application/json; charset=utf-8")
+		--return '[{"label":"Saurischia","id":"1","children":[{"label":"Herrerasaurians","id":"2"},{"label":"Theropods","id":"3"}]}]'
+		return edit.fm(req.url.query.app)	
+	elseif req.method == 'POST' then
+		-- write file system
+	end
+end
+
 return {
 	index = auth.check(index),
 	editor = auth.check(editor),
 	file = auth.check(file),
 	save = auth.check(save),
+	fm = auth.check(fm),
 }
