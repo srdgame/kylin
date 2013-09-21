@@ -33,7 +33,7 @@ local function loadFile(path)
 		table.insert(content, chunk)
 	until not chunk
 
-	fs.close(fd)
+	wait(fs.close(fd))
 
 	return table.concat(content)
 end
@@ -46,7 +46,7 @@ local function saveFile(path, content)
 	end
 
 	local r = await(fs.write(fd, content))
-	fs.close(fd)
+	wait(fs.close(fd))
 
 	return r
 end

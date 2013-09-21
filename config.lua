@@ -39,7 +39,7 @@ _M.save = function()
 		end
 	end
 	r = await(fs.write(fd, '}\n'))
-	fs.close(fd)
+	wait(fs.close(fd))
 end
 
 init()
