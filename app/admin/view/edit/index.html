@@ -38,8 +38,9 @@
 					// The link has an url '#node-[id]' and a data property 'node-id'.
 					$li.find('.jqtree-element').append(
 					'<a href="#node-'+ node.id +'" class="edit" data-node-id="'+
-						node.id +'">edit</a> <a href="#node-'+ node.id +'" class="addfile" data-node-id="'+
-						node.id +'"> addfile</a>'
+						node.id +'">edit</a> <a href="#node-'+ node.id +'" class="delete" data-node-id="'+
+						node.id +'"> delete</a>'
+						//'<div class="edit" data-node-id="'+node.id +'">edit</div>'
 					);
 				}
 				if (node.type == "root") {
@@ -71,10 +72,20 @@
 
 				if (node) {
 					// Display the node name
-					alert(node.id);
+					alert(node.id)
 				} else {
 					alert('message');
 				}
+			}
+		);
+		$tree.on(
+		'click', '.browse',
+			function(e) {
+				// Get the id from the 'node-id' data property
+				var node_id = $(e.target).data('node-id');
+				// 
+				alert("/" + node_id)
+				window.open("/"+ node_id);
 			}
 		);
 		$tree.bind(
