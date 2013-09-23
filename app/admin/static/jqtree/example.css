@@ -26,6 +26,7 @@ p {
 #tree1 {
     background-color: #ccc;
     padding: 1em;
+	height: 100%;
 }
 
 #nav .next {

@@ -2,6 +2,8 @@
 <? include 'http://cdn.staticfile.org/jqueryui/1.10.3/jquery-ui.js' ?>
 <? include 'http://cdn.staticfile.org/jqueryui/1.10.3/css/base/jquery.ui.all.css' ?>
 
+<? include("css/style.css")?>
+
 <? if req.url.path:match("^/login") then include('css/normalize.css') end?>
 <? if req.url.path:match("^/login") then include('css/login/style.css') end?>
 <? if req.url.path:match("^/edit") then include('css/edit/style.css') end?>
@@ -11,4 +13,3 @@
 <? if req.url.path:match("^/edit") then include('jquery.contextMenu/jquery.contextMenu.css') end?>
 <? if req.url.path:match("^/edit") then include('jquery.contextMenu/jquery.contextMenu.js') end?>
 
-<? include("css/style.css")?>

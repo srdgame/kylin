@@ -38,23 +38,29 @@
 					// Append a link to the jqtree-element div.
 					// The link has an url '#node-[id]' and a data property 'node-id'.
 					$li.find('.jqtree-element').append(
-					'<a href="#node-'+ node.id +'" class="edit" data-node-id="'+
-						node.id +'">edit</a> <a href="#node-'+ node.id +'" class="delete" data-node-id="'+
-						node.id +'"> delete</a>'
-						//'<div class="edit" data-node-id="'+node.id +'">edit</div>'
+					'&nbsp;&nbsp;&nbsp;<a href="#node-'+ node.id +'" class="edit">' + 
+						'<img src="<?=URL('static/images/edit/edit.png')?>" data-node-id="'+ 
+						node.id + '"/></a>' +
+					'<a href="#node-'+ node.id +'" class="delete">' + 
+						'<img src="<?=URL('static/images/edit/delete.png')?>" data-node-id="'+ 
+						node.id + '"/></a>'
 					);
 				}
 				if (node.type == "root") {
 					$li.find('.jqtree-element').append(
-					'<a href="#node-'+ node.id +'" class="browse" data-node-id="'+
-						node.id +'"> browse</a>'
+					'&nbsp;&nbsp;&nbsp;<a href="#node-'+ node.id +'" class="browse">' + 
+						'<img src="<?=URL('static/images/edit/browse.png')?>" data-node-id="'+ 
+						node.id + '"/></a>'
 					);
 				}
 				if (node.type == "folder") {
 					$li.find('.jqtree-element').append(
-					'<a href="#node-'+ node.id +'" class="delete" data-node-id="'+
-						node.id +'"> delete</a> <a href="#node-'+ node.id +'" class="addfile" data-node-id="'+
-						node.id +'"> addfile</a>'
+					'&nbsp;&nbsp;&nbsp;<a href="#node-'+ node.id +'" class="add">' + 
+						'<img src="<?=URL('static/images/edit/add.png')?>" data-node-id="'+ 
+						node.id + '"/></a>' +
+					'<a href="#node-'+ node.id +'" class="delete">' + 
+						'<img src="<?=URL('static/images/edit/delete.png')?>" data-node-id="'+ 
+						node.id + '"/></a>'
 					);
 				}
 			}
@@ -72,9 +78,7 @@
 
 				if (node) {
 					// Display the node name
-					reload_file(node_id)
-				} else {
-					alert('message');
+					load_file(node_id)
 				}
 			}
 		);
@@ -90,11 +94,11 @@
 		$tree.bind(
 			'tree.click', function(event) {
 				var node = event.node;
-				//alert(node.name);
-//				$(".context-menu-folder").contextMenu();
+				/*
 				var editor = ace.edit("editor");
 				editor.getSession().setValue("...");
 				editor.setReadOnly(true);
+				*/
 			}
 		);
 
@@ -102,7 +106,7 @@
 			'tree.contextmenu', function(event) {
 				var node = event.node;
 				//alert(node.name)
-//				$(".context-menu-folder").contextMenu();
+				//$(".context-menu-folder").contextMenu();
 			}
 		);
 	});
@@ -111,13 +115,13 @@
 
 <div class="container-editor">
 
-<div id="toolbar" class="ui-widget-header ui-corner-all">
+<div id="toolbar" class="myjquery_toolbar ui-widget-header ui-corner-all">
 	<button id="save">Save file</button>
 	<button id="reload">Reload file</button>
 </div>
 
 
-<div id="editor">file is loading....</div>
+<div id="editor">...</div>
 
 <? include("http://cdn.staticfile.org/ace/1.1.01/ace.js") ?>
 <? include("http://cdn.staticfile.org/ace/1.1.01/mode-luapage.js") ?>
@@ -126,6 +130,8 @@
 <? include("http://cdn.staticfile.org/ace/1.1.01/theme-monokai.js") ?>
 
 <script>
+	$current_file = ""
+
 	var editor = ace.edit("editor");
 	editor.setTheme("ace/theme/monokai");
 
@@ -144,55 +150,63 @@
 	editor.getSession().setMode("ace/mode/<?=mode?>");
 
 	$( "#save" ).button({
-			//text: false,
-			icons: {
-				primary: "ui-icon-disk"
-			}
-		})
-		.click(function(){
-			save_file()
-		});
-		$( "#reload" ).button({
-			//text: false,
-			icons: {
-				primary: "ui-icon-document"
-			}
-		})
-		.click(function(){
-			var $tree = $('#tree1');
-			var node = $tree.tree('getSelectedNode');
-			reload_file(node.id)
-		});
+		//text: false,
+		icons: {
+			primary: "ui-icon-disk"
+		}
+	})
+	.click(function(){
+		save_file()
+	});
+	$( "#reload" ).button({
+		//text: false,
+		icons: {
+			primary: "ui-icon-document"
+		}
+	})
+	.click(function(){
+		load_file($current_file)
+	});
 
 	function save_file() {
-		var $tree = $('#tree1');
-		var node = $tree.tree('getSelectedNode');
 		var content = editor.getSession().getValue();
-		$.post("save", { file: node.id, content: content },
+		$.post("save", { file: $current_file, content: content },
 		function(data){
 		//	alert("Data Saved: " + data);
 		})
 		.done(function() {
 			$("textarea#output_box").append("Data Saved successfully!!\n");
+
+			editor.getSession().getUndoManager().markClean();
 			//alert("Data Saved successfully!!");
 		})
 		.fail(function() {
 			$("textarea#output_box").append("Failed to save content to file!!\n");
 			//alert("Failed to save content to file!!");
 		});
-	}
-	function reload_file(filename) {
+	};
+	function load_file(filename) {
+		if (!editor.getSession().getUndoManager().isClean())
+		{
+			var r=confirm("文件已修改，确定重新加载文件?");
+			if (r != true)
+			{
+				return;
+			}
+		}
+		$current_file = "";
 		$.get("file", { app: "<?=req.url.query.app?>", file: filename }, function(data) {
 			editor.setReadOnly(false);
 			editor.getSession().setValue(data);
 		})
 		.done(function() {
-			//alert( "file load success" );
+			$current_file = filename;
 		})
 		.fail(function() {
 			editor.getSession().setValue("failed to load file");
 		});
-	}
+		//alert('finish');
+	};
 	editor.commands.addCommand({
 		name: 'myCommand',
 		bindKey: {win: 'Ctrl-S',  mac: 'Command-S'},
@@ -201,6 +215,15 @@
 		},
 		readOnly: true // false if this command should not apply in readOnly mode
 	});
+
+	$(window).bind("beforeunload",function()
+	{
+		if (!editor.getSession().getUndoManager().isClean())
+		{
+			return "文件有修改，放弃？";
+		}
+	});
+
 </script>
 
 <div id="output">

@@ -1,6 +1,6 @@
 
 local function index()
-	if req.url.query.app then
+	if req.url.query.app and string.len(req.url.query.app) ~= 0 then
 		return { app = edit.listFiles(req.url.query.app) }
 	else
 		return redirect(URL(''))
