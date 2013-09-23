@@ -114,7 +114,6 @@ local function sendFile(root, req, res)
 					logc:error('failed to load view for '..req.url.app..req.url.path)
 				end
 			end
-			print(200, #body)
 			res(200, headers, body)
 		end)
 	else

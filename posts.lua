@@ -10,6 +10,7 @@ local function readPost(req)
 		repeat
 			local chunk = await(req.body.read())
 			if chunk then
+				print(chunk)
 				table.insert(parts, chunk)
 			end
 		until not chunk

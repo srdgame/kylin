@@ -14,11 +14,13 @@ local newSession = function(key, id, path, span)
 end
 
 local loadSession = function(session)
-	session.data = sessions[session.key]
+	session.data = sessions[session.value]
 end
 
 local saveSession = function(session)
-	sessions[session.key] = session.data
+	--if session.data then
+		sessions[session.value] = session.data
+	--end
 end
 
 return function(app, options)
