@@ -11,6 +11,8 @@ local edoc = require('utils.error-document')
 local loader = require('kylin.loader')
 local config = require('kylin.config')()
 
+logc:info(config.apps())
+
 local host = os.getenv("KYLINK_IP") or "0.0.0.0"
 local port = os.getenv("KYLINK_PORT") or 8080
 

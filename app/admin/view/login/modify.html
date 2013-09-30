@@ -1,0 +1,21 @@
+<? include('header.html') ?>
+<div class="content">
+	<section class="loginform cf">
+	<form name="login" action="change" method="post" accept-charset="utf-8">
+		<ul>
+			<li>
+			<label for="orig_password">Original Password:</label>
+			<input type="password" name="orig_password" placeholder="current password" required>
+			</li>
+			<li>
+			<label for="new_password">Password:</label>
+			<input type="password" name="new_password" placeholder="new password" required>
+			</li>
+			<li>
+			<input type="submit" value="Modify">
+			</li>
+		</ul>
+	</form>
+	</section>
+</div>
+<? include('footer.html') ?>
