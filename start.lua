@@ -20,7 +20,7 @@ loader.load(app)
 
 app = require('kylin.posts')(app)
 app = require('kylin.query')(app)
-app = require('kylin.session')(app, config.settings().session)
+app = require('kylin.session').web(app, config.settings().session)
 app = require('kylin.cookies').web(app)
 
 app = require('error-document')(app, {

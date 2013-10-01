@@ -23,7 +23,9 @@ local saveSession = function(session)
 	--end
 end
 
-return function(app, options)
+local _M = {}
+
+function _M.web(app, options)
 	logc:info(options)
 	options = options or {}
 	options.key = options.key or "kylin_session"
@@ -56,3 +58,8 @@ return function(app, options)
 	end
 end
 
+function _M.timer()
+	-- TODO: remove the expired sesssions from memory or DB
+end
+
+return _M
