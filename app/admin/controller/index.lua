@@ -4,11 +4,6 @@ local function index()
 	return { apps = apps }
 end
 
-local function enum()
-	local apps = app.enum()
-	return { apps = apps }
-end
-
 local function enable()
 --	log(req)
 	if req.method == 'GET' then
@@ -27,6 +22,5 @@ return {
 	index = auth.check(index),
 	hello = function () return "hello world\n" end,
 	about = function () redirect('hello') end,
-	enum  = auth.check(enum),
 	enable = auth.check(enable),
 }
