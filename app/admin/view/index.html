@@ -1,8 +1,24 @@
 
 <? include 'header.html' ?>
 <div class="content">
+	<? include('js/main.js') ?>
+
 	<input id="btnLogout" type="button" value="登出" onclick="window.location.href='login/logout'" />
 	<input id="btnChangePass" type="button" value="更改密码" onclick="window.location.href='login/modify'" />
+
+	<div id="add_app">
+		<div id="dialog-form" title="Create new app">
+			<p class="validateTips">All form fields are required.</p>
+			<form>
+				<fieldset>
+					<label for="name">Name</label>
+					<input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all" />
+				</fieldset>
+			</form>
+		</div>
+		<button id="create-app">Create new app</button>
+	</div>
+
 	<br>
 	<br>
 	<?
@@ -13,8 +29,8 @@
 			<?=v.name?>
 			<? if v.name ~= 'admin' then ?>
 			<!-- <input type="button" value="Access" onclick="window.location.href='<?=URL('/'..v.name)?>'" /> -->
-			<input type="button" value="Access" onclick="window.open('<?=URL('/'..v.name)?>')" />
-			<input type="checkbox" name="<?='btnEnable'..v.name?>" onclick="
+			<input type="button" class="access_button" value="Access" onclick="window.open('<?=URL('/'..v.name)?>')" />
+			<input type="checkbox" class="enable_box" name="<?='btnEnable'..v.name?>" onclick="
 				if(this.checked) 
 				{
 					window.location.href='<?=URL('enable', {app=v.name, enable=true})?>'
@@ -25,7 +41,7 @@
 				}
 			" <?=v.enable and 'checked' or ''?> />
 			<? end ?>
-			<input type="button" value="Edit" onclick="window.location.href='<?=URL('edit/', {app=v.name}) ?>'" />
+			<input type="button" class="edit_button" value="Edit" onclick="window.location.href='<?=URL('edit/', {app=v.name}) ?>'" />
 			<br>
 			<br>
 		</div>

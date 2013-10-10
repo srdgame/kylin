@@ -18,9 +18,21 @@ local function enable()
 	redirect('.');
 end
 
+local function create()
+	--
+	local result = false
+	if req.url.query and req.url.query.app then
+		if app.create(req.url.query.app) then
+			result = true
+		end
+	end
+	return { result = result }
+end
+
 return {
 	index = auth.check(index),
 	hello = function () return "hello world\n" end,
 	about = function () redirect('hello') end,
 	enable = auth.check(enable),
+	create = auth.check(create),
 }

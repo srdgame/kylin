@@ -1,5 +1,7 @@
 local lfs = require('lfs')
+local uv = require('luv')
 local urlcode = require('kylin.urlcode')
+local await = require('fiber').await
 
 local function enumFiles (path, pattern, intofolder, r_table)
 	r_table = r_table or {}
@@ -88,9 +90,17 @@ local function parsePath(path)
 	return file, func
 end
 
+local function mkdir_fs(path, mode) return function(callback)
+	local mode = mode or 775
+	return uv.fs_mkdir(path, mode, callback)
+end end
+
 return {
 	enumPath = enumPath,
 	enumFolders = enumFolders,
 	enumFiles = enumFiles,
 	parsePath = parsePath, 
+	mkdir = function(path, mode)
+		return await(mkdir_fs(path, mode))
+	end,
 }

@@ -24,7 +24,8 @@ app = require('kylin.session').web(app, config.settings().session)
 app = require('kylin.cookies').web(app)
 
 app = require('error-document')(app, {
-	[404] = edoc.text("Bam! 404"),
+	--[404] = edoc.text("Bam! 404"),
+	[404] = edoc.file('404.html'),
 })
 
 app = require('kylin.url')(app)
