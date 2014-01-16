@@ -6,7 +6,7 @@ return function(app)
 		if req.method == 'GET' then
 			local querys = {}
 			urlcode.parsequery(req.url.query, querys)
-			req.url.query = querys
+			req.query = querys
 		end
 
 		app(req, function(code, headers, body)

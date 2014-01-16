@@ -14,11 +14,11 @@ local config = require('kylin.config')()
 logc:info(config.apps())
 
 local host = os.getenv("KYLINK_IP") or "0.0.0.0"
-local port = os.getenv("KYLINK_PORT") or 8080
+local port = os.getenv("KYLINK_PORT") or 8081
 
 loader.load(app)
 
-app = require('kylin.posts')(app)
+app = require('kylin.post')(app)
 app = require('kylin.query')(app)
 app = require('kylin.session').web(app, config.settings().session)
 app = require('kylin.cookies').web(app)

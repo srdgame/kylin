@@ -1,13 +1,13 @@
 <? include('header.html') ?>
 
 <div id="app_title">
-	<a href="<?=URL("edit/", {app=req.url.query.app})?>" >
-		<?=req.url.query.app?>
+	<a href="<?=URL("edit/", {app=req.query.app})?>" >
+		<?=req.query.app?>
 	</a>
 </div>
 
 <div class="container-folder">
-<div id="tree1" class="context-menu-folder" data-url="<?=URL("edit/fm", {app=req.url.query.app})?>"></div>
+<div id="tree1" class="context-menu-folder" data-url="<?=URL("edit/fm", {app=req.query.app})?>"></div>
 </div>
 
 <script>
@@ -195,7 +195,7 @@
 			}
 		}
 		$current_file = "";
-		$.get("file", { app: "<?=req.url.query.app?>", file: filename }, function(data) {
+		$.get("file", { app: "<?=req.query.app?>", file: filename }, function(data) {
 			editor.setReadOnly(false);
 			editor.getSession().setValue(data);
 		})

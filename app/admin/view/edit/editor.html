@@ -2,12 +2,12 @@
 <? include('header.html') ?>
 
 <div id="app_title">
-	<a href="<?=URL("edit/", {app=req.url.query.app})?>" >
-		<?=req.url.query.app?>
+	<a href="<?=URL("edit/", {app=req.query.app})?>" >
+		<?=req.query.app?>
 	</a>
 </div>
 
-<? local file = req.url.query.file ?>
+<? local file = req.query.file ?>
 <div id="app_edit_file">
 	<?=file?>
 </div>
@@ -88,7 +88,7 @@
 		save_file(editor)
 	}
 	function reload_file() {
-		$.get("file", { app: "<?=req.url.query.app?>", file: "<?=file?>" }, function(data) {
+		$.get("file", { app: "<?=req.query.app?>", file: "<?=file?>" }, function(data) {
 			editor.getSession().setValue(data);
 		})
 		.done(function() {

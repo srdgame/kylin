@@ -1,7 +1,7 @@
 
 local function index()
-	if req.url.query.app and string.len(req.url.query.app) ~= 0 then
-		return { app = edit.listFiles(req.url.query.app) }
+	if req.query.app and string.len(req.query.app) ~= 0 then
+		return { app = edit.listFiles(req.query.app) }
 	else
 		return redirect(URL(''))
 	end
@@ -9,7 +9,7 @@ end
 
 -- edit one file
 local function editor()
-	if req.url.query.app and req.url.query.file then
+	if req.query.app and req.query.file then
 		local file_content = "function test() \\n print('thx') \\n end"
 		return {file_content = file_content}
 	else
@@ -18,8 +18,8 @@ local function editor()
 end
 
 local function file()
-	if req.url.query.app and req.url.query.file then
-		local r, err = edit.loadFile(req.url.query.file)
+	if req.query.app and req.query.file then
+		local r, err = edit.loadFile(req.query.file)
 		if r then
 			return r
 		end
@@ -29,7 +29,8 @@ local function file()
 end
 
 local function save()
-	if edit.saveFile(req.posts.file, req.posts.content) then
+	print(pp(req))
+	if edit.saveFile(req.post.file, req.post.content) then
 		return "File saving done"
 	else
 		return inerRes(500, {}, {})
@@ -37,14 +38,14 @@ local function save()
 end
 
 local function fm()
-	if not req.url.query.app then
+	if not req.query.app then
 		return inerRes(500, {}, {})
 	end
 	if req.method == 'GET' then
 		-- read file system
 		setHeader("Content-Type", "application/json; charset=utf-8")
 		--return '[{"label":"Saurischia","id":"1","children":[{"label":"Herrerasaurians","id":"2"},{"label":"Theropods","id":"3"}]}]'
-		return edit.fm(req.url.query.app)	
+		return edit.fm(req.query.app)	
 	elseif req.method == 'POST' then
 		-- write file system
 	end

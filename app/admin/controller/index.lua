@@ -7,12 +7,12 @@ end
 local function enable()
 --	log(req)
 	if req.method == 'GET' then
-		if req.url.query and req.url.query.app then
+		if req.query and req.query.app then
 			local enable = true
-			if not req.url.query.enable or req.url.query.enable == 'false' then
+			if not req.query.enable or req.query.enable == 'false' then
 				enable = false
 			end
-			app.enable(req.url.query.app, enable)
+			app.enable(req.query.app, enable)
 		end
 	end
 	redirect('.');
@@ -21,8 +21,8 @@ end
 local function create()
 	--
 	local result = false
-	if req.url.query and req.url.query.app then
-		if app.create(req.url.query.app) then
+	if req.query and req.query.app then
+		if app.create(req.query.app) then
 			result = true
 		end
 	end

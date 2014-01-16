@@ -4,10 +4,10 @@ return {
 	submit = function()
 		local password = nil
 		if req.method == 'GET' then
-			local query = req.url.query
+			local query = req.query
 			password = query.password
 		else
-			password = req.posts.password
+			password = req.post.password
 		end
 
 		if password and auth.login(password) then
@@ -31,8 +31,8 @@ return {
 			return redirect(URL('login/modify'))
 		end
 		print('update password')
-		orig_pass = req.posts.orig_password
-		new_pass = req.posts.new_password
+		orig_pass = req.post.orig_password
+		new_pass = req.post.new_password
 		local r, info = auth.updatePass(orig_pass, new_pass)
 		log(info)
 		return redirect(URL('#', {info=info}))

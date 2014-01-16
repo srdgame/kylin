@@ -15,8 +15,8 @@ local function readPost(req)
 			end
 		until not chunk
 		local posts = table.concat(parts)
-		req.posts = {}
-		urlcode.parsequery(posts, req.posts)
+		req.post = {}
+		urlcode.parsequery(posts, req.post)
 		callback()
 	end
 end

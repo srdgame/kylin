@@ -46,6 +46,7 @@ local function initEnv(env)
 	env.string = string
 	env.wait = wait
 	env.await = await
+	env.pp = require 'PrettyPrint'
 end
 
 local function sendFile(root, req, res)
