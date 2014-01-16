@@ -70,6 +70,11 @@ local function sendFile(root, req, res)
 				http.redirect(...)(req, res)
 				inter_res = true
 			end,
+			error = function(...)
+				http.error(...)(req, res)
+				inter_res = true
+			end,
+
 			inerRes = function(status, headers, body)
 				res(status, headers, body)
 				inter_res = true

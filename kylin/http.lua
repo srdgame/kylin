@@ -17,4 +17,18 @@ _M.redirect = function (location, how, client_side)
 	end
 end
 
+
+_M.error = function (...)
+	local msg = table.concat({...}, '\n')
+	return function(req, res)
+		res (500, {}, {string.format([[
+		<html><head><title>Xavante Error!</title></head>
+		<body>
+		<h1>Xavante Error!</h1>
+		<p>%s</p>
+		</body></html>
+		]], string.gsub (msg, "\n", "<br/>\n"))})
+	end
+end
+
 return _M
