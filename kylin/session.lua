@@ -1,5 +1,5 @@
 local math = require ('math')
-local cookies = require('cookies')
+local cookies = require('kylin.cookies')
 local logc = require('logging.console')()
 
 local sessions = {}

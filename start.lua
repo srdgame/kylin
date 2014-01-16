@@ -1,6 +1,6 @@
 #!/usr/bin/env luajit
 
-package.path = "../web/?/init.lua;../web/?.lua;../?.lua;../?/init.lua;./?.lua;./?/init.lua"..package.path
+package.path = "../web/?/init.lua;../web/?.lua;./?.lua;./?/init.lua"..package.path
 
 local socketHandler = require('web').socketHandler
 local createServer = require('uv').createServer
